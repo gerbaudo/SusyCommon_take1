@@ -7,11 +7,49 @@
 #include "TSelector.h"
 #include "TTree.h"
 
+#include "MultiLep/EventInfoD3PDObject.h"
+#include "MultiLep/ElectronD3PDObject.h"
+#include "MultiLep/MuonD3PDObject.h"
+#include "MultiLep/JetD3PDObject.h"
+#include "MultiLep/METD3PDObject.h"
+#include "MultiLep/EFTriggerD3PDObject.h"
+#include "MultiLep/VertexD3PDObject.h"
+#include "MultiLep/GenEventD3PDObject.h"
+#include "MultiLep/TruthParticleD3PDObject.h"
+
+
+/*
+
+    SusyD3PDContainer - A basic class for holding the D3PDObjects
+
+*/
+
+class SusyD3PDContainer
+{
+  public:
+
+    // Constructor 
+    SusyD3PDContainer(const Long64_t& entry);
+
+    // Connect the objects to an output tree
+    void ReadFrom( TTree* tree );
+
+    D3PDReader::EventInfoD3PDObject     evt;
+    D3PDReader::ElectronD3PDObject      ele;
+    D3PDReader::MuonD3PDObject          muo;
+    D3PDReader::JetD3PDObject           jet;
+    D3PDReader::METD3PDObject           met;
+    D3PDReader::VertexD3PDObject        vtx;
+    D3PDReader::EFTriggerD3PDObject     trig;
+    D3PDReader::GenEventD3PDObject      gen;
+    D3PDReader::TruthParticleD3PDObject truth;
+};
+
+
 
 /*
 
     SusyD3PDInterface
-
     A class for reading SUSY D3PDs using the interfaces defined in the SUSY MultiLep common code package
 
 */
@@ -41,12 +79,17 @@ class SusyD3PDInterface : public TSelector
     // Main event loop function
     virtual Bool_t  Process(Long64_t entry);
 
-    // Get entry simply communicates the entry number from TSelector to this class
-    // D3PD interface objects hold pointers to m_entry;
+    // Get entry simply communicates the entry number from TSelector 
+    // to this class and hence to all of the VarHandles
     virtual Int_t   GetEntry(Long64_t e, Int_t getall = 0) {
-        m_entry=e;
-        return kTRUE;
+      m_entry=e;
+      return kTRUE;
     }
+
+
+    // Container for D3PD objects - see definition above
+    SusyD3PDContainer d3pd;
+
 
     //
     // Other methods
@@ -68,6 +111,7 @@ class SusyD3PDInterface : public TSelector
     Long64_t m_entry;           // Current entry in the current tree (not chain index!)
 
     int m_dbg;                  // debug level
+
 
 };
 

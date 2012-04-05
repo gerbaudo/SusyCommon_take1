@@ -3,12 +3,44 @@
 
 using namespace std;
 
+
 /*--------------------------------------------------------------------------------*/
-// Constructor
+// SusyD3PDContainer constructor
+/*--------------------------------------------------------------------------------*/
+SusyD3PDContainer::SusyD3PDContainer(const Long64_t& entry) :
+        evt(entry),
+        ele(entry),
+        muo(entry),
+        jet(entry),
+        met(entry),
+        vtx(entry),
+        trig(entry),
+        gen(entry),
+        truth(entry)
+{}
+/*--------------------------------------------------------------------------------*/
+// Connect tree to the D3PD objects in container
+/*--------------------------------------------------------------------------------*/
+void SusyD3PDContainer::ReadFrom(TTree* tree)
+{
+  evt.ReadFrom(tree);
+  ele.ReadFrom(tree);
+  muo.ReadFrom(tree);
+  jet.ReadFrom(tree);
+  met.ReadFrom(tree);
+  vtx.ReadFrom(tree);
+  trig.ReadFrom(tree);
+  gen.ReadFrom(tree);
+  truth.ReadFrom(tree);
+}
+
+/*--------------------------------------------------------------------------------*/
+// SusyD3PDInterface Constructor
 /*--------------------------------------------------------------------------------*/
 SusyD3PDInterface::SusyD3PDInterface(TTree* tree) :
+        d3pd(m_entry),
         m_entry(0),
-        m_dbg(1)
+        m_dbg(0)
 {}
 /*--------------------------------------------------------------------------------*/
 // Destructor
@@ -23,6 +55,7 @@ void SusyD3PDInterface::Init(TTree* tree)
 {
   if(m_dbg) cout << "SusyD3PDInterface::Init" << endl;
   m_tree = tree;
+  d3pd.ReadFrom(tree);
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -40,6 +73,7 @@ void SusyD3PDInterface::Begin(TTree* /*tree*/)
 /*--------------------------------------------------------------------------------*/
 Bool_t SusyD3PDInterface::Process(Long64_t entry)
 {
+  // Communicate the entry number to the interface objects
   GetEntry(entry);
 
   return kTRUE;
