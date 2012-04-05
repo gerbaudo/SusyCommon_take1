@@ -3,6 +3,7 @@
 
 2012-04-05 Steve
 	* Added SusyNt classes
+	* Added SusyD3PDInterface TSelector class
 
 2012-04-04 Steve
 	* Initial package layout

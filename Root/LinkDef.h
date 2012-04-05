@@ -1,6 +1,7 @@
 #include <vector>
 
 #include "SusyCommon/SusyNt.h"
+#include "SusyCommon/SusyD3PDInterface.h"
 
 
 #ifdef __CINT__
@@ -19,5 +20,7 @@
 #pragma link C++ class Susy::Electron+;
 #pragma link C++ class Susy::Muon+;
 #pragma link C++ class Susy::Jet+;
+
+#pragma link C++ class SusyD3PDInterface;
 
 #endif

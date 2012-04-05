@@ -12,5 +12,8 @@
 // typedefs
 typedef unsigned int uint;
 
+// preprocessor magic
+#define GeV 1000.
+
 
 #endif
