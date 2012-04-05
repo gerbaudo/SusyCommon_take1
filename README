@@ -1,0 +1,21 @@
+#------------------------------------------------------------------------------------
+#  SusyCommon
+#
+#  A RootCore package for common UCI SUSY analysis
+#
+#------------------------------------------------------------------------------------
+
+
+
+# Link to code in SVN browser
+https://svnweb.cern.ch/trac/atlasgrp/browser/Institutes/UCIrvine/SUSYAnalysis/SusyCommon
+
+# To checkout the package trunk
+svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/trunk SusyCommon
+
+
+# More stuff to come!
+# There will eventually be a framework for producing a small
+# analysis ntuple on the grid which can be analyzed locally
+# for fast turnaround of plots and numbers
+
