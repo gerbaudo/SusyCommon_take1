@@ -19,3 +19,8 @@ svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/Susy
 # analysis ntuple on the grid which can be analyzed locally
 # for fast turnaround of plots and numbers
 
+
+
+# TODO
+- Add script or package list for checking out all RootCore packages
+        - Could easily set it up to checkout just the MultiLep common code and use the install script
