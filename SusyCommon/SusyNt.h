@@ -109,6 +109,22 @@ namespace Susy
       ClassDef(Jet, 0);
   };
 
+  // Met class
+  class Met : public Particle
+  {
+    public:
+      Met(){};
+      virtual ~Met(){};
+
+      // MET Composition info - do we want TLorentzVectors, TVector2, or just floats?
+      float refEle;             // Ref electron term
+      float refMuo;             // Ref muon term
+      float refJet;             // Ref jet term
+      float refCell;            // Cellout term
+
+      ClassDef(Met, 0);
+  };
+
 };
 
 

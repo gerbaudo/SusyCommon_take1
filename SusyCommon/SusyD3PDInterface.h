@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include <iomanip>
 
 #include "TSelector.h"
 #include "TTree.h"
@@ -16,6 +17,8 @@
 #include "MultiLep/VertexD3PDObject.h"
 #include "MultiLep/GenEventD3PDObject.h"
 #include "MultiLep/TruthParticleD3PDObject.h"
+
+#include "SusyCommon/SusyDefs.h"
 
 
 /*
@@ -71,10 +74,31 @@ class SusyD3PDInterface : public TSelector
     virtual void    Init(TTree *tree);
     // Begin is called before looping on entries
     virtual void    Begin(TTree *tree);
+    virtual void    SlaveBegin(TTree *tree){};
     // Called at the first entry of a new file in a chain
     virtual Bool_t  Notify() { return kTRUE; }
     // Terminate is called after looping is finished
     virtual void    Terminate();
+    virtual void    SlaveTerminate(){};
+    // Due to ROOT's stupid design, need to specify version >= 2 or the tree will never get connected.
+    virtual Int_t   Version() const {
+      return 2;
+    }
+    /*
+    virtual void    SetOption(const char *option) {
+        fOption = option;
+    }
+    virtual void    SetObject(TObject *obj) {
+        fObject = obj;
+    }
+    virtual void    SetInputList(TList *input) {
+        fInput = input;
+    }
+    virtual TList  *GetOutputList() const {
+        return fOutput;
+    }
+    */
+
 
     // Main event loop function
     virtual Bool_t  Process(Long64_t entry);

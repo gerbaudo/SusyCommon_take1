@@ -17,7 +17,8 @@ SusyD3PDContainer::SusyD3PDContainer(const Long64_t& entry) :
         trig(entry),
         gen(entry),
         truth(entry)
-{}
+{
+}
 /*--------------------------------------------------------------------------------*/
 // Connect tree to the D3PD objects in container
 /*--------------------------------------------------------------------------------*/
@@ -41,12 +42,14 @@ SusyD3PDInterface::SusyD3PDInterface(TTree* tree) :
         d3pd(m_entry),
         m_entry(0),
         m_dbg(0)
-{}
+{
+}
 /*--------------------------------------------------------------------------------*/
 // Destructor
 /*--------------------------------------------------------------------------------*/
 SusyD3PDInterface::~SusyD3PDInterface()
-{}
+{
+}
 
 /*--------------------------------------------------------------------------------*/
 // Attach tree (or is it a chain???)
@@ -69,12 +72,49 @@ void SusyD3PDInterface::Begin(TTree* /*tree*/)
 }
 
 /*--------------------------------------------------------------------------------*/
-// Main process loop function
+// Main process loop function - This is just an example for testing
 /*--------------------------------------------------------------------------------*/
 Bool_t SusyD3PDInterface::Process(Long64_t entry)
 {
   // Communicate the entry number to the interface objects
   GetEntry(entry);
+
+  if(m_dbg) cout << "____________________________________________________________" << endl;
+
+  static Long64_t chainEntry = -1;
+  chainEntry++;
+  if(m_dbg || chainEntry%10000==0)
+  {
+    cout << "**** Processing entry " << setw(6) << chainEntry 
+         << " run " << setw(6) << d3pd.evt.RunNumber()
+         << " event " << setw(7) << d3pd.evt.EventNumber() << " ****" << endl;
+  }
+
+  if(m_dbg){
+    // Loop over electrons
+    cout << "Electrons" << endl;
+    for(Int_t iEle=0; iEle<d3pd.ele.n(); iEle++){
+      const ElectronElement* electron = & d3pd.ele[iEle];
+      if(electron->pt()<10*GeV) continue;
+      cout << "  " << iEle << " pt " << electron->pt()/GeV << " eta " << electron->eta() << endl;
+    }
+  
+    // Loop over muons
+    cout << "Muons" << endl;
+    for(Int_t iMu=0; iMu<d3pd.muo.n(); iMu++){
+      const MuonElement* muon = & d3pd.muo[iMu];
+      if(muon->pt()<10*GeV) continue;
+      cout << "  " << iMu << " pt " << muon->pt()/GeV << " eta " << muon->eta() << endl;
+    }
+
+    // Loop over jets
+    cout << "Jets" << endl;
+    for(Int_t iJet=0; iJet<d3pd.jet.n(); iJet++){
+      const JetElement* jet = & d3pd.jet[iJet];
+      if(jet->pt()<20*GeV) continue;
+      cout << "  " << iJet << " pt " << jet->pt()/GeV << " eta " << jet->eta() << endl;
+    }
+  }
 
   return kTRUE;
 }

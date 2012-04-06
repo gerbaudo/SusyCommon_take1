@@ -4,6 +4,7 @@
 2012-04-05 Steve
 	* Added SusyNt classes
 	* Added SusyD3PDInterface TSelector class
+	* Added SusyD3PDTest executable for testing the d3pd interface
 
 2012-04-04 Steve
 	* Initial package layout
