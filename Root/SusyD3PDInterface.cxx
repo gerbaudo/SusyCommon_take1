@@ -1,5 +1,6 @@
 #include "SusyCommon/SusyD3PDInterface.h"
 
+#include "MultiLep/MuonTools.h"
 
 using namespace std;
 
@@ -16,7 +17,8 @@ SusyD3PDContainer::SusyD3PDContainer(const Long64_t& entry) :
         vtx(entry),
         trig(entry),
         gen(entry),
-        truth(entry)
+        truth(entry),
+        truthMu(entry)
 {
 }
 /*--------------------------------------------------------------------------------*/
@@ -33,6 +35,7 @@ void SusyD3PDContainer::ReadFrom(TTree* tree)
   trig.ReadFrom(tree);
   gen.ReadFrom(tree);
   truth.ReadFrom(tree);
+  truthMu.ReadFrom(tree);
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -41,7 +44,8 @@ void SusyD3PDContainer::ReadFrom(TTree* tree)
 SusyD3PDInterface::SusyD3PDInterface(TTree* tree) :
         d3pd(m_entry),
         m_entry(0),
-        m_dbg(0)
+        m_dbg(0),
+        m_isMC(true)
 {
 }
 /*--------------------------------------------------------------------------------*/
@@ -69,6 +73,9 @@ void SusyD3PDInterface::Init(TTree* tree)
 void SusyD3PDInterface::Begin(TTree* /*tree*/)
 {
   if(m_dbg) cout << "SusyD3PDInterface::Begin" << endl;
+
+  // Switch off isMC flag if truth info is unavailable
+  if(!d3pd.truth.channel_number.IsAvailable()) m_isMC = false;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -90,6 +97,12 @@ Bool_t SusyD3PDInterface::Process(Long64_t entry)
          << " event " << setw(7) << d3pd.evt.EventNumber() << " ****" << endl;
   }
 
+  if(m_isMC){
+    if( d3pd.gen.weight()->at(0).size() < 1 ){
+      cout << "Found strange MC event" << endl;
+    }
+  }
+
   if(m_dbg){
     // Loop over electrons
     cout << "Electrons" << endl;
@@ -105,6 +118,9 @@ Bool_t SusyD3PDInterface::Process(Long64_t entry)
       const MuonElement* muon = & d3pd.muo[iMu];
       if(muon->pt()<10*GeV) continue;
       cout << "  " << iMu << " pt " << muon->pt()/GeV << " eta " << muon->eta() << endl;
+
+      // try to match muon to truthMuon
+      //const TruthMuonElement* trueMuon = getMuonTruth( &d3pd.muo, iMu, &d3pd.truthMu );
     }
 
     // Loop over jets

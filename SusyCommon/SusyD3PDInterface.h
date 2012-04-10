@@ -1,5 +1,5 @@
-#ifndef SUSYAnalysis_SusyD3PDInterface_h
-#define SUSYAnalysis_SusyD3PDInterface_h
+#ifndef SusyCommon_SusyD3PDInterface_h
+#define SusyCommon_SusyD3PDInterface_h
 
 
 #include <iostream>
@@ -17,6 +17,7 @@
 #include "MultiLep/VertexD3PDObject.h"
 #include "MultiLep/GenEventD3PDObject.h"
 #include "MultiLep/TruthParticleD3PDObject.h"
+#include "MultiLep/TruthMuonD3PDObject.h"
 
 #include "SusyCommon/SusyDefs.h"
 
@@ -34,7 +35,7 @@ class SusyD3PDContainer
     // Constructor 
     SusyD3PDContainer(const Long64_t& entry);
 
-    // Connect the objects to an output tree
+    // Connect the objects to an input tree
     void ReadFrom( TTree* tree );
 
     D3PDReader::EventInfoD3PDObject     evt;
@@ -46,6 +47,7 @@ class SusyD3PDContainer
     D3PDReader::EFTriggerD3PDObject     trig;
     D3PDReader::GenEventD3PDObject      gen;
     D3PDReader::TruthParticleD3PDObject truth;
+    D3PDReader::TruthMuonD3PDObject     truthMu;
 };
 
 
@@ -80,25 +82,10 @@ class SusyD3PDInterface : public TSelector
     // Terminate is called after looping is finished
     virtual void    Terminate();
     virtual void    SlaveTerminate(){};
-    // Due to ROOT's stupid design, need to specify version >= 2 or the tree will never get connected.
+    // Due to ROOT's stupid design, need to specify version >= 2 or the tree will not connect automatically
     virtual Int_t   Version() const {
       return 2;
     }
-    /*
-    virtual void    SetOption(const char *option) {
-        fOption = option;
-    }
-    virtual void    SetObject(TObject *obj) {
-        fObject = obj;
-    }
-    virtual void    SetInputList(TList *input) {
-        fInput = input;
-    }
-    virtual TList  *GetOutputList() const {
-        return fOutput;
-    }
-    */
-
 
     // Main event loop function
     virtual Bool_t  Process(Long64_t entry);
@@ -123,10 +110,14 @@ class SusyD3PDInterface : public TSelector
     void setDebug(int dbg) { m_dbg = dbg; }
     int dbg() { return m_dbg; }
 
+    // Is MC flag
+    void setIsMC(bool isMC=true) { m_isMC = isMC; }
+    bool isMC() { return m_isMC; }
+
     // Access tree
     TTree* getTree() { return m_tree; }
 
-    ClassDef(SusyD3PDInterface, 0);
+    ClassDef(SusyD3PDInterface, 1);
 
   protected:
 
@@ -135,7 +126,7 @@ class SusyD3PDInterface : public TSelector
     Long64_t m_entry;           // Current entry in the current tree (not chain index!)
 
     int m_dbg;                  // debug level
-
+    bool m_isMC;                // is MC flag
 
 };
 

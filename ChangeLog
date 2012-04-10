@@ -1,5 +1,9 @@
 # vim: set noexpandtab:
 
+2012-04-10 Steve
+	* Added SusyNtObject, SusyD3PDAna, SusyNtMaker
+	* Added object and event selection to SusyD3PDAna
+	* Added filling of SusyNt in SusyNtMaker
 
 2012-04-05 Steve
 	* Added SusyNt classes
