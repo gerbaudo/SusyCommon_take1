@@ -9,7 +9,8 @@ using namespace std;
 /*--------------------------------------------------------------------------------*/
 // SusyD3PDAna Constructor
 /*--------------------------------------------------------------------------------*/
-SusyD3PDAna::SusyD3PDAna(TTree* tree) : SusyD3PDInterface(tree)
+SusyD3PDAna::SusyD3PDAna(TTree* tree) : SusyD3PDInterface(tree),
+                                        m_sample("")
 {
 }
 /*--------------------------------------------------------------------------------*/
@@ -27,8 +28,10 @@ void SusyD3PDAna::Begin(TTree* /*tree*/)
 {
   if(m_dbg) cout << "SusyD3PDAna::Begin" << endl;
 
-  // Switch off isMC flag if truth info is unavailable
-  if(!d3pd.truth.channel_number.IsAvailable()) m_isMC = false;
+  // Use sample name to set MC flag
+  if(m_sample.Contains("data", TString::kIgnoreCase)) {
+    m_isMC = false;
+  }
 
   if(m_isMC) cout << "Processing as MC"   << endl;
   else       cout << "Processing as DATA" << endl;
@@ -39,7 +42,7 @@ void SusyD3PDAna::Begin(TTree* /*tree*/)
 
   // GRL
   if(!m_isMC){
-    if(m_grlFileName=="") m_grlFileName = "$ROOTCOREDIR/data/MultiLep/data11_7TeV.periodAllYear_DetStatus-v36-pro10_CoolRunQuery-00-04-08_Susy.xml";
+    //if(m_grlFileName=="") m_grlFileName = "$ROOTCOREDIR/data/MultiLep/data11_7TeV.periodAllYear_DetStatus-v36-pro10_CoolRunQuery-00-04-08_Susy.xml";
     Root::TGoodRunsListReader* grlReader = new Root::TGoodRunsListReader();
     grlReader->AddXMLFile(m_grlFileName);
     grlReader->Interpret();

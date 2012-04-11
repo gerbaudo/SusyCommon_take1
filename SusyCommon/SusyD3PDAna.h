@@ -34,6 +34,10 @@ class SusyD3PDAna : public SusyD3PDInterface
     // Terminate is called after looping is finished
     virtual void    Terminate();
 
+    // Sample name - used to set isMC flag
+    TString sample() { return m_sample; }
+    void setSample(TString s) { m_sample = s; }
+
     //
     // Object selection
     // Selected leptons have kinematic and cleaning cuts (no overlap removal)
@@ -59,13 +63,9 @@ class SusyD3PDAna : public SusyD3PDInterface
 
     // grl
     void setGRLFile(TString fileName) { m_grlFileName = fileName; }
-    bool passGRL(){
-      return m_isMC || m_grl.HasRunLumiBlock(d3pd.evt.RunNumber(), d3pd.evt.lbn());
-    }
+    bool passGRL(){ return m_isMC || m_grl.HasRunLumiBlock(d3pd.evt.RunNumber(), d3pd.evt.lbn()); }
     // lar error
-    bool passLarErr(){
-      return m_isMC || (d3pd.evt.larError()==0);
-    }
+    bool passLarErr(){ return m_isMC || (d3pd.evt.larError()==0); }
     // lar hole veto
     bool passLarHoleVeto();
     // bad jet
@@ -98,7 +98,7 @@ class SusyD3PDAna : public SusyD3PDInterface
 
   protected:
 
-    SUSYObjDef                  m_susyObj;      // SUSY object definitions
+    TString                     m_sample;       // sample name
 
     //
     // Object collections (usually just vectors of indices)
@@ -132,6 +132,8 @@ class SusyD3PDAna : public SusyD3PDInterface
     //
     // Tools
     //
+
+    SUSYObjDef                  m_susyObj;      // SUSY object definitions
 
     TString                     m_grlFileName;  // grl file name
     Root::TGoodRunsList         m_grl;          // good runs list

@@ -33,8 +33,6 @@ SusyNtObject::SusyNtObject(const Long64_t& entry):
 /*--------------------------------------------------------------------------------*/
 void SusyNtObject::WriteTo(TTree* tree)
 {
-  cout << "SusyNtObject::WriteTo" << endl;
-
   evt.SetActive(true);
   ele.SetActive(true);
   muo.SetActive(true);

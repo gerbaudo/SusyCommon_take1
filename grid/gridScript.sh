@@ -6,6 +6,7 @@ echo "**** GRID SCRIPT BEGIN ****"
 list=(`echo $1 | tr ',' ' '`)
 nFiles=${#list[@]}
 echo $nFiles input files
+shift
 
 # Write the list of files to the fileList
 if [ -f gridFileList.txt ]; then
@@ -16,14 +17,11 @@ for file in ${list[@]}; do
     echo $file >> gridFileList.txt
 done
 
-# MC variables
-#if [[ $# -ge 4 ]]; then
-    #echo "sample $2 xsec $3 sumw $4"
-    #mcOpts="-s $2 -xsec $3 -sumw $4"
-#fi
+# Remaining options are passed directly to NtMaker
+echo "Passing options to job: $@"
 
 # Now, run the executable
-NtMaker -f gridFileList.txt -d 1
+NtMaker -f gridFileList.txt $@
 
 exitcode=$?
 if [[ $exitcode != 0 ]]; then

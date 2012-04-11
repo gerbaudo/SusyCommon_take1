@@ -26,7 +26,7 @@ datasets=(
 )
 
 
-# Setup Panda
+# Setup Panda before running this script
 #source ${ATLAS_LOCAL_ROOT_BASE}/packageSetups/atlasLocalPandaClientSetup.sh
 
 # Loop over datasets
@@ -41,14 +41,17 @@ for inDS in ${datasets[@]}; do
 	# final output ds name
 	outDS="user.Steve.$iteration.$shortname.SusyNt/"
 
+        command="./gridScript.sh %IN -s $shortname"
+
 	echo 
 	echo "----------------------------------------------------------------------------------------------------------"
 	echo "INPUT   $inDS"
 	echo "OUTPUT  $outDS"
         echo "short   $shortname"
+        echo "command $command"
 	
 	# prun command
-	prun --exec "./gridScript.sh %IN" --useRootCore --tmpDir /tmp \
+	prun --exec "$command" --useRootCore --tmpDir /tmp \
              --extFile '*.so,*.root' --match "*root*" --outputs "susyNt.root" \
              --inTarBall=area.tar \
              --athenaTag=17.0.5.5 \

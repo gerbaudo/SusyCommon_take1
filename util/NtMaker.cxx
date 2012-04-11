@@ -4,6 +4,7 @@
 
 #include "TChain.h"
 #include "Cintex/Cintex.h"
+#include "TSystem.h"
 
 #include "SusyCommon/SusyNtMaker.h"
 #include "SusyCommon/SusyDefs.h"
@@ -32,8 +33,8 @@ void help()
   cout << "  -f name of input filelist"         << endl;
   cout << "     defaults: fileList.txt"         << endl;
 
-  cout << "  -s sample name, for naming files"  << endl;
-  cout << "     defaults: ntuple sample name"   << endl;
+  cout << "  -s sample name, sets isMC flag"    << endl;
+  cout << "     use e.g. 'ttbar', 'DataG', etc" << endl;
 
   cout << "  -h print this help"                << endl;
 }
@@ -90,6 +91,11 @@ int main(int argc, char** argv)
   // Build the TSelector
   SusyNtMaker* susyAna = new SusyNtMaker();
   susyAna->setDebug(dbg);
+  susyAna->setSample(sample);
+
+  // GRL
+  TString grl = gSystem->ExpandPathName("$ROOTCOREDIR/data/MultiLep/data11_7TeV.periodAllYear_DetStatus-v36-pro10_CoolRunQuery-00-04-08_Susy.xml");
+  susyAna->setGRLFile(grl);
 
   // Run the job
   if(nEvt<0) nEvt = nEntries;

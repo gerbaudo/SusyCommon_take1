@@ -26,6 +26,8 @@ for line in ${matches[@]}; do
 
 	outDS="user.Steve.$iteration.$sample.SusyNt/"
 
+        command="./gridScript.sh %IN -s $sample"
+
 	echo 
 	echo "__________________________________________________________________________________________________________"
         echo "sample  $sample"
@@ -36,7 +38,7 @@ for line in ${matches[@]}; do
 
 	
 	# prun command
-	prun --exec "./gridScript.sh %IN" --tmpDir /tmp --inTarBall=area.tar --useRootCore \
+	prun --exec "$command" --tmpDir /tmp --inTarBall=area.tar --useRootCore \
 		--match "*root*" --outputs "susyNt.root" --athenaTag=17.0.3 --extFile '*.so,*.root' \
                 --nFiles=1 \
 		--inDS  $inDS \
