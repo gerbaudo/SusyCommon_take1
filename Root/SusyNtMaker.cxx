@@ -167,8 +167,8 @@ void SusyNtMaker::fillElectronVars(const LeptonInfo* lepIn)
   eleOut->ptcone20      = element->ptcone20()/GeV;
   eleOut->q             = element->charge();
   // add d0 later, not sure if d0_exPV is available in the d3pds
-  eleOut->mcType        = element->type();
-  eleOut->mcOrigin      = element->origin();
+  eleOut->mcType        = m_isMC? element->type() : 0;
+  eleOut->mcOrigin      = m_isMC? element->origin() : 0;
   eleOut->clusEta       = element->cl_eta();
   eleOut->mediumPP      = element->mediumPP();
   eleOut->tightPP       = element->tightPP();
@@ -184,7 +184,7 @@ void SusyNtMaker::fillMuonVars(const LeptonInfo* lepIn)
   const MuonElement* element = lepIn->getMuonElement();
 
   // need truthMuon for type and origin
-  const TruthMuonElement* trueMuon = getMuonTruth( &d3pd.muo, lepIn->idx(), &d3pd.truthMu );
+  const TruthMuonElement* trueMuon = m_isMC? getMuonTruth( &d3pd.muo, lepIn->idx(), &d3pd.truthMu ) : 0;
 
   // LorentzVector
   muOut->SetPtEtaPhiM(lepIn->lv()->Pt()/GeV, lepIn->lv()->Eta(), lepIn->lv()->Phi(), lepIn->lv()->M()/GeV);
