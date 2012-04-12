@@ -13,6 +13,8 @@ https://svnweb.cern.ch/trac/atlasgrp/browser/Institutes/UCIrvine/SUSYAnalysis/Su
 # To checkout the package trunk
 svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/trunk SusyCommon
 
+# Or the current recommended tag
+svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-00-00-01 SusyCommon
 
 # More stuff to come!
 # There will eventually be a framework for producing a small

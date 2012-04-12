@@ -42,7 +42,6 @@ void SusyD3PDAna::Begin(TTree* /*tree*/)
 
   // GRL
   if(!m_isMC){
-    //if(m_grlFileName=="") m_grlFileName = "$ROOTCOREDIR/data/MultiLep/data11_7TeV.periodAllYear_DetStatus-v36-pro10_CoolRunQuery-00-04-08_Susy.xml";
     Root::TGoodRunsListReader* grlReader = new Root::TGoodRunsListReader();
     grlReader->AddXMLFile(m_grlFileName);
     grlReader->Interpret();

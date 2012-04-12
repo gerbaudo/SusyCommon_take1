@@ -122,6 +122,8 @@ void SusyNtMaker::fillNtVars()
 {
   fillEventVars();
   fillLeptonVars();
+  fillJetVars();
+  fillMetVars();
   m_outTree->Fill();
 }
 

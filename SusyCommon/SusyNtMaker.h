@@ -37,22 +37,18 @@ class SusyNtMaker : public SusyD3PDAna
     // SusyNt Fill methods
     //
 
-    // all SusyNt variables
     void fillNtVars();
-    // event variables
     void fillEventVars();
-    // lepton variables
     void fillLeptonVars();
     void fillElectronVars(const LeptonInfo* lepIn);
     void fillMuonVars(const LeptonInfo* lepIn);
-    // jet variables
     void fillJetVars();
     void fillMetVars();
 
   protected:
 
-    TFile*      m_outTreeFile;          // output tree file
-    TTree*      m_outTree;              // output tree
+    TFile*              m_outTreeFile;  // output tree file
+    TTree*              m_outTree;      // output tree
 
     Susy::SusyNtObject  m_susyNt;       // SusyNt interface
 
