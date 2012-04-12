@@ -1,5 +1,10 @@
 # vim: set noexpandtab:
 
+2012-04-11 Steve
+	* Added ChainHelper for easy TChain building
+	* Implemented signal obj selection in SusyNtAna
+	* Tagging SusyCommon-00-00-01
+
 2012-04-10 Steve
 	* Added SusyNtObject, SusyD3PDAna, SusyNtMaker
 	* Added object and event selection to SusyD3PDAna

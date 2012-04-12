@@ -6,6 +6,7 @@
 #include <string>
 
 #include "TChain.h"
+#include "TLorentzVector.h"
 
 #include "MultiLep/ElectronD3PDObject.h"
 #include "MultiLep/MuonD3PDObject.h"
@@ -19,11 +20,20 @@
 //  common definitions for SUSY analysis code
 //-----------------------------------------------------------------------------------
 
+namespace Susy
+{
+  class Lepton;
+  class Electron;
+  class Muon;
+  class Jet;
+  class Met;
+}
 
 //-----------------------------------------------------------------------------------
 // Global constants
 //-----------------------------------------------------------------------------------
 const float GeV = 1000.;
+const float MZ = 91.19;
 
 //-----------------------------------------------------------------------------------
 // Convenience typedefs
@@ -35,11 +45,44 @@ typedef D3PDReader::MuonD3PDObjectElement MuonElement;
 typedef D3PDReader::JetD3PDObjectElement JetElement;
 typedef D3PDReader::TruthMuonD3PDObjectElement TruthMuonElement;
 
-// Truth particle proxy class was not generated.  TODO
-// -> It might not work because the structure is slightly different
-//    There is a channel_number variable which isn't a vector
-//typedef D3PDReader::TruthParticleD3PDObjectElement TruthElement;
+typedef std::vector<const Susy::Lepton*>   LeptonVector;
+typedef std::vector<const Susy::Electron*> ElectronVector;
+typedef std::vector<const Susy::Muon*>     MuonVector;
+typedef std::vector<const Susy::Jet*>      JetVector;
 
+//-----------------------------------------------------------------------------------
+// LepInfo - a simple, transient class for interacting with leptons in SusyNt
+// Not yet sure if I'm going to use this class
+//-----------------------------------------------------------------------------------
+class LepInfo
+{
+  public:
+    bool isEle;         // is electron
+    uint idx;           // idx in SusyNt collection (either nt.ele or nt.muo)
+    bool isSignal;      // lepton passes signal cuts
+    Susy::Lepton* l;    // pointer to the Lepton in SusyNt
+
+    // Comparison operators for sorting leptons by pt
+    bool operator > (const LepInfo & other) const;
+    bool operator < (const LepInfo & other) const;
+};
+
+//-----------------------------------------------------------------------------------
+// Global functions
+//-----------------------------------------------------------------------------------
+bool isSameFlav(const Susy::Lepton* l1, const Susy::Lepton* l2);
+bool isSFOS(const Susy::Lepton* l1, const Susy::Lepton* l2);
+bool isSFSS(const Susy::Lepton* l1, const Susy::Lepton* l2);
+
+float Mll(const Susy::Lepton* l1, const Susy::Lepton* l2);
+float Mlll(const Susy::Lepton* l1, const Susy::Lepton* l2, const Susy::Lepton* l3);
+float Mt(const Susy::Lepton* lep, const Susy::Met* met);
+
+bool isZ(const Susy::Lepton* l1, const Susy::Lepton* l2, float massWindow=10.);
+bool hasZ(const LeptonVector& leps, float massWindow=10.);
+
+// for pointer sorting
+bool comparePt(const TLorentzVector* p1, const TLorentzVector* p2);
 
 //-----------------------------------------------------------------------------------
 // Trigger flags
@@ -78,12 +121,6 @@ stringvector getEleTrigChains();
 stringvector getMuTrigChains();
 
 
-//-----------------------------------------------------------------------------------
-// Global functions
-//-----------------------------------------------------------------------------------
-
-// Build a TChain out of a fileList - returns nonzero if error
-int buildChain(TChain* chain, std::string fileListName);
 
 
 #endif
