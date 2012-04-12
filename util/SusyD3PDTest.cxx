@@ -7,6 +7,7 @@
 
 #include "SusyCommon/SusyD3PDInterface.h"
 #include "SusyCommon/SusyDefs.h"
+#include "SusyCommon/ChainHelper.h"
 
 using namespace std;
 
@@ -82,7 +83,7 @@ int main(int argc, char** argv)
 
   // Build the input chain
   TChain* chain = new TChain("susy");
-  int fileErr = buildChain(chain, fileList);
+  int fileErr = ChainHelper::addFileList(chain, fileList);
   if(fileErr) return 1;
   Long64_t nEntries = chain->GetEntries();
   chain->ls();

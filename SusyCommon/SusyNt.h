@@ -32,6 +32,9 @@ namespace Susy
 
       void clear() { TLorentzVector::Clear(); }
 
+      // print method
+      virtual void print() const {};
+
       // Comparison operators for sorting, etc.
       inline bool operator > (const Particle & other) const {
         return Pt() > other.Pt();
@@ -51,7 +54,7 @@ namespace Susy
       virtual ~Lepton(){};
 
       // public member vars
-      float q;                  // Charge
+      int q;                    // Charge
       float ptcone20;           // ptcone20 isolation
       float d0;                 // d0 extrapolated to PV 
       float errD0;              // Uncertainty on d0
@@ -60,13 +63,25 @@ namespace Susy
 
       uint trigFlags;           // Bit word representing matched trigger chains
 
+      // trigger matching
+      bool matchTrig(uint mask){
+        return (trigFlags & mask) == mask;
+      }
+
+      // polymorphism, baby!!
+      virtual bool isEle() const { return false; }
+      virtual bool isMu()  const { return false; }
+
+      // print method
+      virtual void print() const {};
+
       // clear vars
       void clear(){
         q = ptcone20 = d0 = errD0 = mcType = mcOrigin = trigFlags = 0;
         Particle::clear();
       }
       
-      ClassDef(Lepton, 1);
+      ClassDef(Lepton, 2);
   };
 
   // Electron class
@@ -79,6 +94,13 @@ namespace Susy
       float clusEta;            // CaloCluster eta
       bool mediumPP;            // isEM medium++
       bool tightPP;             // isEM tight++
+
+      // polymorphism, baby!!
+      bool isEle() const { return true; }
+      bool isMu()  const { return false; }
+
+      // print method
+      void print() const;
 
       // clear vars
       void clear(){
@@ -98,6 +120,14 @@ namespace Susy
 
       bool isCombined;          // Is combined muon
 
+      // polymorphism, baby!!
+      bool isEle() const { return false; }
+      bool isMu()  const { return true; }
+
+      // print method
+      void print() const;
+
+      // clear vars
       void clear(){
         isCombined = 0;
         Lepton::clear();
@@ -115,6 +145,9 @@ namespace Susy
 
       float jvf;                // Jet vertex fraction
       float combNN;             // JetFitterCombNN b-tag weight
+
+      // print method
+      void print() const;
 
       // clear vars
       void clear(){
@@ -137,6 +170,9 @@ namespace Susy
       float refMuo;             // Ref muon term
       float refJet;             // Ref jet term
       float refCell;            // Cellout term
+
+      // print vars
+      void print() const;
 
       // clear vars
       void clear(){
@@ -164,7 +200,7 @@ namespace Susy
       float w;                  // MC generator weight
 
       // print event
-      void print(){
+      void print() const{
         std::cout << "run " << run << " event " << event << " isMC " << isMC << std::endl;
       }
 
@@ -175,7 +211,7 @@ namespace Susy
         mcChannel = w = 0;
       }
 
-      ClassDef(Event, 1);
+      ClassDef(Event, 2);
   };
 
 };

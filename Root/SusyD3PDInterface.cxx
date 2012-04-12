@@ -73,9 +73,6 @@ void SusyD3PDInterface::Init(TTree* tree)
 void SusyD3PDInterface::Begin(TTree* /*tree*/)
 {
   if(m_dbg) cout << "SusyD3PDInterface::Begin" << endl;
-
-  // Switch off isMC flag if truth info is unavailable
-  if(!d3pd.truth.channel_number.IsAvailable()) m_isMC = false;
 }
 
 /*--------------------------------------------------------------------------------*/
