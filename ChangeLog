@@ -4,6 +4,8 @@
 	* Added ChainHelper for easy TChain building
 	* Implemented signal obj selection in SusyNtAna
 	* Tagging SusyCommon-00-00-01
+	* Oops, forgot to add SusyNtAna files! Can't delete tag...
+	* Tagging SusyCommon-00-00-02
 
 2012-04-10 Steve
 	* Added SusyNtObject, SusyD3PDAna, SusyNtMaker
