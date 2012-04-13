@@ -167,6 +167,9 @@ void SusyD3PDAna::matchElectronTriggers()
 {
   if(m_dbg) cout << "matchElectronTriggers" << endl;
   int run = d3pd.evt.RunNumber();
+  //bool e20_medium    = d3pd.trig.EF_e20_medium();
+  //bool e22_medium    = d3pd.trig.EF_e22_medium();
+  //bool e22vh_medium1 = d3pd.trig.EF_e22vh_medium1();
 
   // loop over all baseline electrons
   for(uint i=0; i<m_baseElectrons.size(); i++){
@@ -178,15 +181,15 @@ void SusyD3PDAna::matchElectronTriggers()
 
     if(lv->Pt() > 25.*GeV){
       // e20_medium
-      if( run < 186873 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e20_medium()) ){
+      if( m_isMC || (run<186873 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e20_medium())) ){
         flags |= TRIG_e20_medium;
       }
       // e22_medium
-      if( run < 188902 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e22_medium()) ){
+      if( m_isMC || (run<188902 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e22_medium())) ){
         flags |= TRIG_e22_medium;
       }
       // e22vh_medium1
-      if( run > 188901 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e22vh_medium1()) ){
+      if( m_isMC || (run>188901 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e22vh_medium1())) ){
         flags |= TRIG_e22vh_medium1;
       }
     }
