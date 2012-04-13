@@ -93,7 +93,8 @@ class SusyD3PDAna : public SusyD3PDInterface
       matchMuonTriggers();
     }
     void matchElectronTriggers();
-    bool matchElectronTrigger(float eta, float phi, D3PDReader::VarHandle< std::vector<int>* >& trigHandle);
+    //bool matchElectronTrigger(float eta, float phi, D3PDReader::VarHandle< std::vector<int>* >& trigHandle);
+    bool matchElectronTrigger(float eta, float phi, std::vector<int>* roi);
     void matchMuonTriggers();
 
   protected:
