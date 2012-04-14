@@ -52,6 +52,21 @@ class SusyNtMaker : public SusyD3PDAna
 
     Susy::SusyNtObject  m_susyNt;       // SusyNt interface
 
+    // Some object counts
+    uint                n_base_ele;
+    uint                n_base_muo;
+    uint                n_base_jet;
+
+    // Some event counts
+    uint                n_evt_initial;
+    uint                n_evt_grl;
+    uint                n_evt_larErr;
+    uint                n_evt_larHole;
+    uint                n_evt_badJet;
+    uint                n_evt_goodVtx;
+    uint                n_evt_badMu;
+    uint                n_evt_cosmic;
+
 };
 
 #endif

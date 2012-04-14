@@ -9,6 +9,17 @@ using namespace std;
 SusyNtMaker::SusyNtMaker(TTree* tree) : SusyD3PDAna(tree),
                                         m_susyNt()
 {
+  n_base_ele=0;
+  n_base_muo=0;
+  n_base_jet=0;
+  n_evt_initial=0;
+  n_evt_grl=0;
+  n_evt_larErr=0;
+  n_evt_larHole=0;
+  n_evt_badJet=0;
+  n_evt_goodVtx=0;
+  n_evt_badMu=0;
+  n_evt_cosmic=0;
 }
 /*--------------------------------------------------------------------------------*/
 // Destructor
@@ -71,6 +82,23 @@ void SusyNtMaker::Terminate()
   SusyD3PDAna::Terminate();
   if(m_dbg) cout << "SusyNtMaker::Terminate" << endl;
 
+  cout << endl;
+  cout << "Object counter" << endl;
+  cout << "  BaseEle  " << n_base_ele    << endl;
+  cout << "  BaseMuo  " << n_base_muo    << endl;
+  cout << "  BaseJet  " << n_base_jet    << endl;
+  cout << endl;
+  cout << "Event counter" << endl;
+  cout << "  Initial  " << n_evt_initial << endl;
+  cout << "  GRL      " << n_evt_grl     << endl;
+  cout << "  LarErr   " << n_evt_larErr  << endl;
+  cout << "  LarHole  " << n_evt_larHole << endl;
+  cout << "  BadJet   " << n_evt_badJet  << endl;
+  cout << "  GoodVtx  " << n_evt_goodVtx << endl;
+  cout << "  BadMu    " << n_evt_badMu   << endl;
+  cout << "  Cosmic   " << n_evt_cosmic  << endl;
+  cout << endl;
+
   // Save the output tree
   m_outTreeFile = m_outTree->GetCurrentFile();
   m_outTreeFile->Write(0, TObject::kOverwrite);
@@ -85,10 +113,7 @@ bool SusyNtMaker::selectEvent()
 {
   if(m_dbg) cout << "selectEvent" << endl;
 
-  // grl
-  if(!passGRL()) return false;
-  // larErr
-  if(!passLarErr()) return false;
+  n_evt_initial++;
 
   m_susyObj.Reset();
   clearObjects();
@@ -96,16 +121,32 @@ bool SusyNtMaker::selectEvent()
   selectObjects();
   buildMet();
 
+  n_base_ele += m_baseElectrons.size();
+  n_base_muo += m_baseMuons.size();
+  n_base_jet += m_baseJets.size();
+
+  // grl
+  if(!passGRL()) return false;
+  n_evt_grl++;
+  // larErr
+  if(!passLarErr()) return false;
+  n_evt_larErr++;
+
   // lar hole veto
   if(!passLarHoleVeto()) return false;
+  n_evt_larHole++;
   // bad jet veto
   if(!passBadJet()) return false;
+  n_evt_badJet++;
   // primary vertex cut
   if(!passGoodVtx()) return false;
+  n_evt_goodVtx++;
   // bad muon veto
   if(!passBadMuon()) return false;
+  n_evt_badMu++;
   // cosmic veto
   if(!passCosmic()) return false;
+  n_evt_cosmic++;
 
   matchTriggers();
 
