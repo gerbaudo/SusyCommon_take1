@@ -252,11 +252,12 @@ void SusyNtMaker::fillJetVars()
   if(m_dbg) cout << "fillJetVars" << endl;
   // Loop over selected jets and fill output tree
   for(uint iJet=0; iJet<m_sigJets.size(); iJet++){
+    int jetIdx = m_sigJets[iJet];
     m_susyNt.jet()->push_back( Susy::Jet() );
     Susy::Jet* jetOut = & m_susyNt.jet()->back();
-    const JetElement* element = & d3pd.jet[iJet];
+    const JetElement* element = & d3pd.jet[jetIdx];
 
-    const TLorentzVector* lv = & m_susyObj.GetJetTLV(iJet);
+    const TLorentzVector* lv = & m_susyObj.GetJetTLV(jetIdx);
     jetOut->SetPtEtaPhiM(lv->Pt()/GeV, lv->Eta(), lv->Phi(), lv->M()/GeV);
 
     jetOut->jvf         = element->jvtxf();
