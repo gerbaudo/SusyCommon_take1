@@ -1,8 +1,10 @@
+#include <algorithm>
 #include "SusyCommon/SusyDefs.h"
 #include "SusyCommon/SusyNt.h"
 
 using namespace std;
 using namespace Susy;
+
 
 
 /*--------------------------------------------------------------------------------*/
@@ -18,33 +20,54 @@ inline bool LepInfo::operator < (const LepInfo & other) const
 }
 
 /*--------------------------------------------------------------------------------*/
+// Data stream
+/*--------------------------------------------------------------------------------*/
+string streamName(DataStream stream)
+{
+  if     (stream==Stream_MC) return "MC";
+  else if(stream==Stream_Muons) return "Muons";
+  else if(stream==Stream_Egamma) return "Egamma";
+  else return "Unknown";
+}
+
+/*--------------------------------------------------------------------------------*/
 // Flavor functions
 /*--------------------------------------------------------------------------------*/
-inline bool isSameFlav(const Lepton* l1, const Lepton* l2)
+bool isSameFlav(const Lepton* l1, const Lepton* l2)
 { return l1->isEle()==l2->isEle() && l1->isMu()==l2->isMu(); }
 
-inline bool isSFOS(const Lepton* l1, const Lepton* l2)
+bool isSFOS(const Lepton* l1, const Lepton* l2)
 { return isSameFlav(l1,l2) && (l1->q*l2->q < 0); }
 
-inline bool isSFSS(const Lepton* l1, const Lepton* l2)
+bool isSFSS(const Lepton* l1, const Lepton* l2)
 { return isSameFlav(l1,l2) && (l1->q*l2->q > 0); }
+
+bool hasSFOS(const LeptonVector& leps){
+  uint nLep = leps.size();
+  for(uint i=0; i<nLep; i++){
+    for(uint j=i+1; j<nLep; j++){
+      if(isSFOS(leps[i],leps[j])) return true;
+    }
+  }
+  return false;
+}
 
 /*--------------------------------------------------------------------------------*/
 // Mass functions
 /*--------------------------------------------------------------------------------*/
-inline float Mll(const Lepton* l1, const Lepton* l2)
+float Mll(const Lepton* l1, const Lepton* l2)
 { return (*l1 + *l2).M(); }
 
-inline float Mlll(const Lepton* l1, const Lepton* l2, const Lepton* l3)
+float Mlll(const Lepton* l1, const Lepton* l2, const Lepton* l3)
 { return (*l1 + *l2 + *l3).M(); }
 
-inline float Mt(const Lepton* lep, const Met* met)
+float Mt(const Lepton* lep, const Met* met)
 { return sqrt( 2.*lep->Pt()*met->Pt()*(1 - cos(lep->DeltaPhi(*met))) ); }
 
-inline bool isZ(const Lepton* l1, const Lepton* l2, float massWindow)
-{ return fabs( Mll(l1,l2)-MZ ) < massWindow; }
+bool isZ(const Lepton* l1, const Lepton* l2, float massWindow)
+{ return isSFOS(l1,l2) && fabs( Mll(l1,l2)-MZ ) < massWindow; }
 
-inline bool hasZ(const LeptonVector& leps, float massWindow)
+bool hasZ(const LeptonVector& leps, float massWindow)
 {
   for(uint i=0; i<leps.size(); i++){
     for(uint j=i+1; j<leps.size(); j++){
@@ -55,10 +78,29 @@ inline bool hasZ(const LeptonVector& leps, float massWindow)
 }
 
 /*--------------------------------------------------------------------------------*/
+// Jet functions
+/*--------------------------------------------------------------------------------*/
+bool hasBJet(const JetVector& jets, float weight)
+{
+  uint nJet = jets.size();
+  for(uint i=0; i<nJet; i++){
+    if( jets[i]->combNN > weight ) return true;
+  }
+  return false;
+}
+
+/*--------------------------------------------------------------------------------*/
 // helper function for sorting particle pointers by pt
 /*--------------------------------------------------------------------------------*/
 bool comparePt(const TLorentzVector* p1, const TLorentzVector* p2) 
 { return p1->Pt() > p2->Pt(); }
+
+/*--------------------------------------------------------------------------------*/
+// Find a lepton in a collection
+/*--------------------------------------------------------------------------------*/
+bool findLepton(const Lepton* lep, const LeptonVector& leptons) { 
+  return std::find(leptons.begin(), leptons.end(), lep) != leptons.end(); 
+}
 
 /*--------------------------------------------------------------------------------*/
 // Trigger chain names

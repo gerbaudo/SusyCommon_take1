@@ -63,8 +63,11 @@ namespace Susy
 
       uint trigFlags;           // Bit word representing matched trigger chains
 
+
       // trigger matching
-      bool matchTrig(uint mask){
+      // provide the trigger chain via bit mask, 
+      // e.g. TRIG_mu18
+      bool matchTrig(uint mask) const {
         return (trigFlags & mask) == mask;
       }
 
@@ -81,7 +84,7 @@ namespace Susy
         Particle::clear();
       }
       
-      ClassDef(Lepton, 2);
+      ClassDef(Lepton, 3);
   };
 
   // Electron class
@@ -193,6 +196,8 @@ namespace Susy
       uint run;                 // run number 
       uint event;               // event number
       uint lb;                  // lumi block number
+      DataStream stream;        // DataStream enum, defined in SusyDefs.h
+
       uint nVtx;                // number of good vertices
 
       bool isMC;                // is MC flag
@@ -200,18 +205,17 @@ namespace Susy
       float w;                  // MC generator weight
 
       // print event
-      void print() const{
-        std::cout << "run " << run << " event " << event << " isMC " << isMC << std::endl;
-      }
+      void print() const;
 
       // clear vars
       void clear(){
         run = event = lb = nVtx = 0;
+        stream = Stream_Unknown;
         isMC = false;
         mcChannel = w = 0;
       }
 
-      ClassDef(Event, 2);
+      ClassDef(Event, 3);
   };
 
 };

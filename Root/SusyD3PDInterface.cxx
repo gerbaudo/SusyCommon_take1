@@ -41,7 +41,7 @@ void SusyD3PDContainer::ReadFrom(TTree* tree)
 /*--------------------------------------------------------------------------------*/
 // SusyD3PDInterface Constructor
 /*--------------------------------------------------------------------------------*/
-SusyD3PDInterface::SusyD3PDInterface(TTree* tree) :
+SusyD3PDInterface::SusyD3PDInterface() :
         d3pd(m_entry),
         m_entry(0),
         m_dbg(0),

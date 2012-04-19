@@ -9,8 +9,8 @@ using namespace std;
 /*--------------------------------------------------------------------------------*/
 // SusyD3PDAna Constructor
 /*--------------------------------------------------------------------------------*/
-SusyD3PDAna::SusyD3PDAna(TTree* tree) : SusyD3PDInterface(tree),
-                                        m_sample("")
+SusyD3PDAna::SusyD3PDAna() : 
+        m_sample("")
 {
 }
 /*--------------------------------------------------------------------------------*/
@@ -33,8 +33,16 @@ void SusyD3PDAna::Begin(TTree* /*tree*/)
     m_isMC = false;
   }
 
+  // Use sample name to set data stream
+  if(m_isMC) m_stream = Stream_MC;
+  else if(m_sample.Contains("muons", TString::kIgnoreCase))  m_stream = Stream_Muons;
+  else if(m_sample.Contains("egamma", TString::kIgnoreCase)) m_stream = Stream_Egamma;
+  else m_stream = Stream_Unknown;
+
   if(m_isMC) cout << "Processing as MC"   << endl;
   else       cout << "Processing as DATA" << endl;
+
+  cout << "DataStream: " << streamName(m_stream) << endl;
 
   // Setup SUSYTools
   m_susyObj.initialize();

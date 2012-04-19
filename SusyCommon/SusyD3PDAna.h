@@ -24,7 +24,7 @@ class SusyD3PDAna : public SusyD3PDInterface
   public:
 
     // Constructor and destructor
-    SusyD3PDAna(TTree* /*tree*/ = 0);
+    SusyD3PDAna();
     virtual ~SusyD3PDAna();
 
     // Begin is called before looping on entries
@@ -100,6 +100,7 @@ class SusyD3PDAna : public SusyD3PDInterface
   protected:
 
     TString                     m_sample;       // sample name
+    DataStream                  m_stream;       // data stream enum, taken from sample name
 
     //
     // Object collections (usually just vectors of indices)

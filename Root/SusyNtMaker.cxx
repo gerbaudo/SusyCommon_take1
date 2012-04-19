@@ -6,8 +6,7 @@ using namespace std;
 /*--------------------------------------------------------------------------------*/
 // SusyNtMaker Constructor
 /*--------------------------------------------------------------------------------*/
-SusyNtMaker::SusyNtMaker(TTree* tree) : SusyD3PDAna(tree),
-                                        m_susyNt()
+SusyNtMaker::SusyNtMaker()
 {
   n_base_ele=0;
   n_base_muo=0;
@@ -45,6 +44,9 @@ void SusyNtMaker::Begin(TTree* /*tree*/)
   m_outTree->SetAutoSave(10000000);
   // Max tree size determines when a new file and tree are written
   m_outTree->SetMaxTreeSize(3000000000u);
+  // Set all branches active for writing, for now.
+  // Later, add switch for systematics
+  m_susyNt.SetActive();
   m_susyNt.WriteTo(m_outTree);
 }
 
@@ -178,6 +180,7 @@ void SusyNtMaker::fillEventVars()
   evt->run              = d3pd.evt.RunNumber();
   evt->event            = d3pd.evt.EventNumber();
   evt->lb               = d3pd.evt.lbn();
+  evt->stream           = m_stream;
 
   evt->isMC             = m_isMC;
   evt->mcChannel        = m_isMC? d3pd.truth.channel_number() : 0;

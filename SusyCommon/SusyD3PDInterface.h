@@ -65,7 +65,7 @@ class SusyD3PDInterface : public TSelector
   public:
 
     // Constructor and destructor
-    SusyD3PDInterface(TTree * /*tree*/ = 0);
+    SusyD3PDInterface();
     virtual ~SusyD3PDInterface();
 
     //

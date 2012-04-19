@@ -7,7 +7,7 @@ using namespace Susy;
 /*--------------------------------------------------------------------------------*/
 // SusyNtAna Constructor
 /*--------------------------------------------------------------------------------*/
-SusyNtAna::SusyNtAna(TTree* tree) :
+SusyNtAna::SusyNtAna() : 
         nt(m_entry),
         m_entry(0),
         m_dbg(0)
@@ -100,6 +100,15 @@ void SusyNtAna::Terminate()
 }
 
 /*--------------------------------------------------------------------------------*/
+// Get event weight
+/*--------------------------------------------------------------------------------*/
+float SusyNtAna::getEventWeight()
+{
+  // simple for now, will add other scale factors later
+  return nt.evt()->w;
+}
+
+/*--------------------------------------------------------------------------------*/
 // Clear objects
 /*--------------------------------------------------------------------------------*/
 void SusyNtAna::clearObjects()
@@ -119,8 +128,8 @@ void SusyNtAna::selectLeptons()
 {
   // Currently, the objects stored in SusyNt are baseline objects
   const vector<Electron>* electrons = nt.ele();
-  const vector<Muon>* muons = nt.muo();
-  for(uint iEl=0; iEl<electrons->size(); iEl++){
+  uint nEle = electrons->size();
+  for(uint iEl=0; iEl<nEle; iEl++){
     const Electron* ele = & (*electrons)[iEl];
     m_baseElectrons.push_back(ele);
     m_baseLeptons.push_back(ele);
@@ -129,7 +138,9 @@ void SusyNtAna::selectLeptons()
       m_signalLeptons.push_back(ele);
     }
   }
-  for(uint iMu=0; iMu<muons->size(); iMu++){
+  const vector<Muon>* muons = nt.muo();
+  uint nMu = muons->size();
+  for(uint iMu=0; iMu<nMu; iMu++){
     const Muon* mu = & (*muons)[iMu];
     m_baseMuons.push_back(mu);
     m_baseLeptons.push_back(mu);
@@ -163,7 +174,8 @@ bool SusyNtAna::isSignalMuon(const Muon* mu)
 void SusyNtAna::selectJets()
 {
   const vector<Jet>* jets = nt.jet();
-  for(uint iJ=0; iJ<jets->size(); iJ++){
+  uint nJet = jets->size();
+  for(uint iJ=0; iJ<nJet; iJ++){
     const Jet* jet = & (*jets)[iJ];
     if(isSignalJet(jet)) m_signalJets.push_back(jet);
   }
@@ -177,4 +189,86 @@ bool SusyNtAna::isSignalJet(const Jet* jet)
   if(jet->Eta() > 2.5) return false;
   if(jet->jvf < 0.75) return false;
   return true;
+}
+
+/*--------------------------------------------------------------------------------*/
+// Run dependent trigger chains
+/*--------------------------------------------------------------------------------*/
+uint SusyNtAna::getEleTrigger()
+{
+  uint run = nt.evt()->run;
+  if(run < 186873) return TRIG_e20_medium;
+  else if(run < 188902) return TRIG_e22_medium;
+  else return TRIG_e22vh_medium1;
+}
+/*--------------------------------------------------------------------------------*/
+uint SusyNtAna::getMuoTrigger()
+{
+  uint run = nt.evt()->run;
+  if(run < 186516) return TRIG_mu18;
+  else return TRIG_mu18_medium;
+}
+/*--------------------------------------------------------------------------------*/
+uint SusyNtAna::get2EleTrigger()
+{
+  return 0;
+  //uint run = nt.evt()->run;
+  //if(run < 186873) return TRIG_2e12_medium;
+  //else if(run < 188902) return TRIG_2e12T_medium;
+  //else return TRIG_2e12Tvh_medium1;
+}
+/*--------------------------------------------------------------------------------*/
+uint SusyNtAna::get2MuoTrigger()
+{
+  return 0;
+  //return TRIG_2mu10_loose;
+}
+
+/*--------------------------------------------------------------------------------*/
+// Event and object dumps
+/*--------------------------------------------------------------------------------*/
+void SusyNtAna::dumpEvent()
+{
+  nt.evt()->print();
+  nt.met()->print();
+}
+/*--------------------------------------------------------------------------------*/
+void SusyNtAna::dumpBaselineObjects()
+{
+  cout << "Baseline electrons" << endl;
+  for(uint iEl=0; iEl < m_baseElectrons.size(); iEl++){
+    cout << "  " << iEl << " ";
+    m_baseElectrons[iEl]->print();
+  }
+  cout << "Baseline muons" << endl;
+  for(uint iMu=0; iMu < m_baseMuons.size(); iMu++){
+    cout << "  " << iMu << " ";
+    m_baseMuons[iMu]->print();
+  }
+  // baseline jets are already stored in the SusyNt
+  cout << "Baseline jets" << endl;
+  uint nJet = nt.jet()->size();
+  for(uint iJ=0; iJ < nJet; iJ++){
+    cout << "  " << iJ << " ";
+    nt.jet()->at(iJ).print();
+  }
+}
+/*--------------------------------------------------------------------------------*/
+void SusyNtAna::dumpSignalObjects()
+{
+  cout << "Signal electrons" << endl;
+  for(uint iEl=0; iEl < m_signalElectrons.size(); iEl++){
+    cout << "  " << iEl << " ";
+    m_signalElectrons[iEl]->print();
+  }
+  cout << "Signal muons" << endl;
+  for(uint iMu=0; iMu < m_signalMuons.size(); iMu++){
+    cout << "  " << iMu << " ";
+    m_signalMuons[iMu]->print();
+  }
+  cout << "Signal jets" << endl;
+  for(uint iJ=0; iJ < m_signalJets.size(); iJ++){
+    cout << "  " << iJ << " ";
+    m_signalJets[iJ]->print();
+  }
 }

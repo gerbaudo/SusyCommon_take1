@@ -55,3 +55,10 @@ void Met::print() const
   cout.precision(6);
   cout.unsetf(ios_base::fixed);
 }
+/*--------------------------------------------------------------------------------*/
+// Event print
+/*--------------------------------------------------------------------------------*/
+void Event::print() const
+{
+  cout << "Run " << run << " Event " << event << " Stream " << streamName(stream) << endl;
+}

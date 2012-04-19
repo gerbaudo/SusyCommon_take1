@@ -20,11 +20,14 @@ namespace Susy
   {
     public:
   
-      // Constructor for writing
+      // Constructor for writing only
       SusyNtObject();
-      // Constructor for reading
+      // Constructor for reading and writing
       SusyNtObject(const Long64_t& entry);
   
+      // Set branches active for writing
+      // I will later add flags here for controlling systematics
+      void SetActive();
       // Connect the objects to an output tree
       void WriteTo( TTree* tree );
       // Connect the objects to an input tree
