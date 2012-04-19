@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#iteration="i3"
-iteration="test3"
+iteration="i7"
+#iteration="test4"
 
 # get the samples of interest
 if [[ $# = 0 ]]; then
@@ -30,17 +30,18 @@ for line in ${matches[@]}; do
 
 	echo 
 	echo "__________________________________________________________________________________________________________"
+        echo "INPUT   $inDS"
+        echo "OUTPUT  $outDS"
         echo "sample  $sample"
-	echo "inDS    $inDS"
-	echo "outDS   $outDS"
         #echo "xsec    $xsec"
         #echo "sumw    $sumw"
 
 	
 	# prun command
 	prun --exec "$command" --tmpDir /tmp --inTarBall=area.tar --useRootCore \
-		--match "*root*" --outputs "susyNt.root" --athenaTag=17.0.3 --extFile '*.so,*.root' \
-                --nFiles=1 \
+		--match "*root*" --outputs "susyNt.root" \
+                --extFile '*.so,*.root' \
+                --athenaTag=17.0.5.5 \
 		--inDS  $inDS \
 		--outDS $outDS
 
