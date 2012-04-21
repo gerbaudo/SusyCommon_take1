@@ -240,7 +240,7 @@ void SusyD3PDAna::matchElectronTriggers()
         flags |= TRIG_2e12_medium;
       }
       // 2e12T_medium
-      if( m_isMC || (run<188902 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_2e12T_medium())) ){
+      if( m_isMC || (run>186873 && run<188902 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_2e12T_medium())) ){
         flags |= TRIG_2e12T_medium;
       }
       // 2e12Tvh_medium
