@@ -50,6 +50,7 @@ for inDS in ${datasets[@]}; do
 	
 	# prun command
 	prun --exec "$command" --useRootCore --tmpDir /tmp \
+             --excludedSite=RHUL,OX,SARA,SHEF \
              --extFile '*.so,*.root' --match "*root*" --outputs "susyNt.root" \
              --inTarBall=area.tar \
              --athenaTag=17.0.5.5 \

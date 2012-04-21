@@ -117,6 +117,9 @@ enum ElecTrigBit
   BIT_e20_medium,
   BIT_e22_medium,
   BIT_e22vh_medium1,
+  BIT_2e12_medium,
+  BIT_2e12T_medium,
+  BIT_2e12Tvh_medium,
   N_EL_TRIG
 };
 enum MuonTrigBit
@@ -125,6 +128,7 @@ enum MuonTrigBit
   BIT_mu10_loose,
   BIT_mu18,
   BIT_mu18_medium,
+  BIT_2mu10_loose,
   N_MU_TRIG
 };
 
@@ -133,9 +137,13 @@ enum MuonTrigBit
 const uint TRIG_e20_medium      = 1<<BIT_e20_medium;
 const uint TRIG_e22_medium      = 1<<BIT_e22_medium;
 const uint TRIG_e22vh_medium1   = 1<<BIT_e22vh_medium1;
+const uint TRIG_2e12_medium     = 1<<BIT_2e12_medium;
+const uint TRIG_2e12T_medium    = 1<<BIT_2e12T_medium;
+const uint TRIG_2e12Tvh_medium  = 1<<BIT_2e12Tvh_medium;
 // muon
 const uint TRIG_mu18            = 1<<BIT_mu18;
 const uint TRIG_mu18_medium     = 1<<BIT_mu18_medium;
+const uint TRIG_2mu10_loose     = 1<<BIT_2mu10_loose;
 
 // Trigger chain names, for convenience
 stringvector getEleTrigChains();

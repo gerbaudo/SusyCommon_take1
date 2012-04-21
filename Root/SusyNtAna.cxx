@@ -1,4 +1,5 @@
 #include <iomanip>
+#include "TFile.h"
 #include "SusyCommon/SusyNtAna.h"
 
 using namespace std;
@@ -100,12 +101,12 @@ void SusyNtAna::Terminate()
 }
 
 /*--------------------------------------------------------------------------------*/
-// Get event weight
+// Get event weight, combine gen, pileup, xsec, and lumi weights
 /*--------------------------------------------------------------------------------*/
 float SusyNtAna::getEventWeight()
 {
-  // simple for now, will add other scale factors later
-  return nt.evt()->w;
+  const Event* evt = nt.evt();
+  return evt->w * evt->wPileup * evt->xsec * evt->lumiSF;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -225,6 +226,63 @@ uint SusyNtAna::get2MuoTrigger()
 }
 
 /*--------------------------------------------------------------------------------*/
+// Trigger reweight maps
+/*--------------------------------------------------------------------------------*/
+void SusyNtAna::loadTriggerMaps()
+{
+  TFile* eleTrigFile = new TFile("$ROOTCOREDIR/data/DGTriggerReweight/electron_maps.root");
+  TFile* muoTrigFile = new TFile("$ROOTCOREDIR/data/DGTriggerReweight/muon_triggermaps.root");
+
+  // TODO: dilepton triggers
+  m_elTrigWeightMap[TRIG_e20_medium]     = loadTrigWeighter(eleTrigFile, "e20_medium");
+  m_elTrigWeightMap[TRIG_e22_medium]     = loadTrigWeighter(eleTrigFile, "e22_medium");
+  m_elTrigWeightMap[TRIG_e22vh_medium1]  = loadTrigWeighter(eleTrigFile, "e22vh_medium1");
+  //m_elTrigWeightMap[TRIG_2e12_medium]    = loadTrigWeighter(eleTrigFile, "e12_medium");
+  //m_elTrigWeightMap[TRIG_2e12T_medium]   = loadTrigWeighter(eleTrigFile, "e12T_medium");
+  //m_elTrigWeightMap[TRIG_2e12Tvh_medium] = loadTrigWeighter(eleTrigFile, "e12Tvh_medium");
+
+  m_muTrigWeightMap[TRIG_mu18]           = loadTrigWeighter(muoTrigFile, "mu18");
+  m_muTrigWeightMap[TRIG_mu18_medium]    = loadTrigWeighter(muoTrigFile, "mu18_medium");
+}
+/*--------------------------------------------------------------------------------*/
+APReweightND* SusyNtAna::loadTrigWeighter(TFile* f, TString chain)
+{
+  TString numName = "ths_"+chain+"_num";
+  TString denName = "ths_"+chain+"_den";
+  // muon file currently contains a typo
+  if (chain.Contains("mu")) numName = "ths_"+chain+"_nom";
+
+  // Does this memory get cleaned up when the file closes?
+  THnSparseD* num = (THnSparseD*) f->Get( numName );
+  THnSparseD* den = (THnSparseD*) f->Get( denName );
+  if(!num || !den){
+    cout << "ERROR loading trig maps for chain " << chain << endl;
+    abort();
+  }
+  return new APReweightND( den, num, true );
+}
+/*--------------------------------------------------------------------------------*/
+APReweightND* SusyNtAna::getEleTrigWeighter(uint trigFlag)
+{
+  map<int, APReweightND*>::iterator itr = m_elTrigWeightMap.find(trigFlag);
+  if(itr==m_elTrigWeightMap.end()){
+    cout << "ERROR - Electron trigger reweighter " << trigFlag << " doesn't exist" << endl;
+    return 0;
+  }
+  return itr->second;
+}
+/*--------------------------------------------------------------------------------*/
+APReweightND* SusyNtAna::getMuoTrigWeighter(uint trigFlag)
+{
+  map<int, APReweightND*>::iterator itr = m_muTrigWeightMap.find(trigFlag);
+  if(itr==m_muTrigWeightMap.end()){
+    cout << "ERROR - Muon trigger reweighter " << trigFlag << " doesn't exist" << endl;
+    return 0;
+  }
+  return itr->second;
+}
+
+/*--------------------------------------------------------------------------------*/
 // Event and object dumps
 /*--------------------------------------------------------------------------------*/
 void SusyNtAna::dumpEvent()
@@ -237,19 +295,19 @@ void SusyNtAna::dumpBaselineObjects()
 {
   cout << "Baseline electrons" << endl;
   for(uint iEl=0; iEl < m_baseElectrons.size(); iEl++){
-    cout << "  " << iEl << " ";
+    cout << "  ";
     m_baseElectrons[iEl]->print();
   }
   cout << "Baseline muons" << endl;
   for(uint iMu=0; iMu < m_baseMuons.size(); iMu++){
-    cout << "  " << iMu << " ";
+    cout << "  ";
     m_baseMuons[iMu]->print();
   }
   // baseline jets are already stored in the SusyNt
   cout << "Baseline jets" << endl;
   uint nJet = nt.jet()->size();
   for(uint iJ=0; iJ < nJet; iJ++){
-    cout << "  " << iJ << " ";
+    cout << "  ";
     nt.jet()->at(iJ).print();
   }
 }
@@ -258,17 +316,17 @@ void SusyNtAna::dumpSignalObjects()
 {
   cout << "Signal electrons" << endl;
   for(uint iEl=0; iEl < m_signalElectrons.size(); iEl++){
-    cout << "  " << iEl << " ";
+    cout << "  ";
     m_signalElectrons[iEl]->print();
   }
   cout << "Signal muons" << endl;
   for(uint iMu=0; iMu < m_signalMuons.size(); iMu++){
-    cout << "  " << iMu << " ";
+    cout << "  ";
     m_signalMuons[iMu]->print();
   }
   cout << "Signal jets" << endl;
   for(uint iJ=0; iJ < m_signalJets.size(); iJ++){
-    cout << "  " << iJ << " ";
+    cout << "  ";
     m_signalJets[iJ]->print();
   }
 }

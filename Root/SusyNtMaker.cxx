@@ -185,6 +185,10 @@ void SusyNtMaker::fillEventVars()
   evt->isMC             = m_isMC;
   evt->mcChannel        = m_isMC? d3pd.truth.channel_number() : 0;
   evt->w                = m_isMC? d3pd.truth.event_weight()   : 1;
+
+  evt->wPileup          = m_isMC? getPileupWeight() : 1;
+  evt->xsec             = m_isMC? getXsecWeight() : 1;
+  evt->lumiSF           = m_isMC? getLumiWeight() : 1;             
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -220,6 +224,11 @@ void SusyNtMaker::fillElectronVars(const LeptonInfo* lepIn)
   eleOut->tightPP       = element->tightPP();
 
   eleOut->trigFlags     = m_eleTrigFlags[ lepIn->idx() ];
+
+  // Efficiency scale factor.  For now, use tightPP if electrons is tightPP, otherwise mediumPP
+  int set               = eleOut->tightPP? 7 : 6;
+  eleOut->effSF         = m_susyObj.GetSignalElecSF   ( element->cl_eta(), lepIn->lv()->Pt(), set );
+  eleOut->errEffSF      = m_susyObj.GetSignalElecSFUnc( element->cl_eta(), lepIn->lv()->Pt(), set );
 }
 /*--------------------------------------------------------------------------------*/
 void SusyNtMaker::fillMuonVars(const LeptonInfo* lepIn)
@@ -245,6 +254,9 @@ void SusyNtMaker::fillMuonVars(const LeptonInfo* lepIn)
   muOut->mcOrigin       = trueMuon? trueMuon->origin() : 0;
 
   muOut->trigFlags      = m_muoTrigFlags[ lepIn->idx() ];
+
+  muOut->effSF          = m_susyObj.GetSignalMuonSF(lepIn->idx());
+  muOut->errEffSF       = m_susyObj.GetSignalMuonSFUnc(lepIn->idx());
 }
 
 /*--------------------------------------------------------------------------------*/

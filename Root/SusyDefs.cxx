@@ -109,11 +109,14 @@ stringvector getEleTrigChains()
 {
   stringvector elTriggers;
   elTriggers.resize(N_EL_TRIG);
-  elTriggers[BIT_e10_medium]    = "EF_e10_medium";
-  elTriggers[BIT_e12_medium]    = "EF_e12_medium";
-  elTriggers[BIT_e20_medium]    = "EF_e20_medium";
-  elTriggers[BIT_e22_medium]    = "EF_e22_medium";
-  elTriggers[BIT_e22vh_medium1] = "EF_e22vh_medium1";
+  elTriggers[BIT_e10_medium]     = "EF_e10_medium";
+  elTriggers[BIT_e12_medium]     = "EF_e12_medium";
+  elTriggers[BIT_e20_medium]     = "EF_e20_medium";
+  elTriggers[BIT_e22_medium]     = "EF_e22_medium";
+  elTriggers[BIT_e22vh_medium1]  = "EF_e22vh_medium1";
+  elTriggers[BIT_2e12_medium]    = "EF_2e12_medium";
+  elTriggers[BIT_2e12T_medium]   = "EF_2e12T_medium";
+  elTriggers[BIT_2e12Tvh_medium] = "EF_2e12Tvh_medium";
   return elTriggers;
 }
 /*--------------------------------------------------------------------------------*/
@@ -123,6 +126,7 @@ stringvector getMuTrigChains()
   muTriggers.resize(N_MU_TRIG);
   muTriggers[BIT_mu18]          = "EF_mu18";
   muTriggers[BIT_mu18_medium]   = "EF_mu18_medium";
+  muTriggers[BIT_2mu10_loose]   = "EF_2mu10_loose";
   return muTriggers;
 }
 

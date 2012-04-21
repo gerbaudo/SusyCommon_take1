@@ -61,8 +61,10 @@ namespace Susy
       uint mcType;              // MCTruthClassifier particle type
       uint mcOrigin;            // MCTruthClassifier particle origin
 
-      uint trigFlags;           // Bit word representing matched trigger chains
+      float effSF;              // Efficiency scale factor
+      float errEffSF;           // Uncertainty on the efficiency scale factor
 
+      uint trigFlags;           // Bit word representing matched trigger chains
 
       // trigger matching
       // provide the trigger chain via bit mask, 
@@ -70,6 +72,7 @@ namespace Susy
       bool matchTrig(uint mask) const {
         return (trigFlags & mask) == mask;
       }
+
 
       // polymorphism, baby!!
       virtual bool isEle() const { return false; }
@@ -84,7 +87,7 @@ namespace Susy
         Particle::clear();
       }
       
-      ClassDef(Lepton, 3);
+      ClassDef(Lepton, 4);
   };
 
   // Electron class
@@ -204,6 +207,14 @@ namespace Susy
       uint mcChannel;           // MC channel ID number (mc run number)
       float w;                  // MC generator weight
 
+      // Reweighting and scaling
+      float wPileup;            // pileup weight
+      float xsec;               // cross section * kfactor * efficiency, from SUSY db
+      float lumiSF;             // luminosity scale factor = integrated lumi / sum of mc weights
+
+      // Combined normalized event weight
+      float fullWeight() const { return wPileup*xsec*lumiSF; }
+
       // print event
       void print() const;
 
@@ -213,9 +224,10 @@ namespace Susy
         stream = Stream_Unknown;
         isMC = false;
         mcChannel = w = 0;
+        wPileup = xsec = lumiSF = 1;
       }
 
-      ClassDef(Event, 3);
+      ClassDef(Event, 4);
   };
 
 };

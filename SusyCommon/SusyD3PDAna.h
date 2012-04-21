@@ -8,6 +8,8 @@
 #include "GoodRunsLists/TGoodRunsListReader.h"
 #include "SUSYTools/SUSYObjDef.h"
 #include "SUSYTools/FakeMetEstimator.h"
+#include "SUSYTools/SUSYCrossSection.h"
+#include "PileupReweighting/TPileupReweighting.h"
 #include "MultiLep/LeptonInfo.h"
 
 #include "SusyCommon/SusyD3PDInterface.h"
@@ -81,6 +83,18 @@ class SusyD3PDAna : public SusyD3PDInterface
     // Event weighting
     //
 
+    // event weight (xsec*kfac) 
+    float getXsecWeight();
+    // lumi weight (lumi/sumw) normalized to 4.7/fb
+    float getLumiWeight();
+    // luminosity to normalize to (in 1/pb)
+    void setLumi(float lumi) { m_lumi = lumi; }
+    // sum of mc weights for sample
+    void setSumw(float sumw) { m_sumw = sumw; }
+    // pileup weight, not included in event weight above
+    float getPileupWeight();
+
+
     //
     // Trigger - check matching for all baseline leptons
     //
@@ -131,6 +145,9 @@ class SusyD3PDAna : public SusyD3PDInterface
     // MET
     TLorentzVector              m_met;          // fully corrected MET
 
+    float                       m_lumi;         // normalized luminosity (defaults to 4.7/fb)
+    float                       m_sumw;         // sum of mc weights for normalization, must be set by user
+
     //
     // Tools
     //
@@ -141,6 +158,14 @@ class SusyD3PDAna : public SusyD3PDInterface
     Root::TGoodRunsList         m_grl;          // good runs list
 
     FakeMetEstimator            m_fakeMetEst;   // fake met estimator for lar hole veto
+
+    Root::TPileupReweighting*   m_pileup;       // pileup reweighting
+
+    // The SUSY CrossSectionDB has its own map for retrieving xsec info, but
+    // it has a lot of entries so lookup is slow.  Save our own xsec map
+
+    SUSY::CrossSectionDB*                       m_susyXsec;     // SUSY cross section database
+    std::map<int,SUSY::CrossSectionDB::Process> m_xsecMap;      // our own xsec map for faster lookup times
 
 };
 

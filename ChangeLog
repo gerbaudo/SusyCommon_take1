@@ -1,6 +1,14 @@
 # vim: set noexpandtab:
 
 2012-04-19 Steve
+	* Added cross sections from SUSYTools
+	* Pileup reweighting
+	* summed mc weights and lumi scaling (lumi/sumw)
+	* di-electron trigger matching
+		* di-muon feature matching prescription not available
+	* Added trigger reweighting maps to SusyNtAna
+
+2012-04-19 Steve
 	* Added DataStream
 	* fix jet index usage when filling SusyNt
 	* Started adding some trigger matching stuff

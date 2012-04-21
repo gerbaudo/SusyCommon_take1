@@ -1,3 +1,4 @@
+#include "TSystem.h"
 #include "SusyCommon/SusyD3PDAna.h"
 #include "MultiLep/ElectronTools.h"
 #include "MultiLep/MuonTools.h"
@@ -10,7 +11,9 @@ using namespace std;
 // SusyD3PDAna Constructor
 /*--------------------------------------------------------------------------------*/
 SusyD3PDAna::SusyD3PDAna() : 
-        m_sample("")
+        m_sample(""),
+        m_lumi(4700),
+        m_sumw(1)
 {
 }
 /*--------------------------------------------------------------------------------*/
@@ -48,6 +51,10 @@ void SusyD3PDAna::Begin(TTree* /*tree*/)
   m_susyObj.initialize();
   m_fakeMetEst.initialize("$ROOTCOREDIR/data/MultiLep/fest_periodF_v1.root");
 
+  // SUSY cross sections
+  string xsecFileName  = gSystem->ExpandPathName("$ROOTCOREDIR/data/SUSYTools/susy_crosssections.txt");
+  m_susyXsec = new SUSY::CrossSectionDB(xsecFileName);
+
   // GRL
   if(!m_isMC){
     Root::TGoodRunsListReader* grlReader = new Root::TGoodRunsListReader();
@@ -55,6 +62,20 @@ void SusyD3PDAna::Begin(TTree* /*tree*/)
     grlReader->Interpret();
     m_grl = grlReader->GetMergedGoodRunsList();
     delete grlReader;
+  }
+
+  // Pileup reweighting
+  if(m_isMC){
+    m_pileup = new Root::TPileupReweighting("PileupReweighting");
+    m_pileup->AddLumiCalcFile("$ROOTCOREDIR/data/MultiLep/ilumicalc_histograms_None_178044-191933.root");
+    m_pileup->AddConfigFile("$ROOTCOREDIR/data/MultiLep/mc11b_defaults.root");
+    m_pileup->SetUnrepresentedDataAction(2);
+    int pileupError = m_pileup->Initialize();
+
+    if(pileupError){
+      cout << "Problem in pileup initialization.  pileupError = " << pileupError << endl;
+      abort();
+    }
   }
 }
 
@@ -87,6 +108,9 @@ void SusyD3PDAna::Terminate()
 {
   if(m_dbg) cout << "SusyD3PDAna::Terminate" << endl;
   m_susyObj.finalize();
+
+  delete m_susyXsec;
+  delete m_pileup;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -210,6 +234,20 @@ void SusyD3PDAna::matchElectronTriggers()
         flags |= TRIG_e22vh_medium1;
       }
     }
+    if(lv->Pt() > 15.*GeV){
+      // 2e12_medium
+      if( m_isMC || (run<186873 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_2e12_medium())) ){
+        flags |= TRIG_2e12_medium;
+      }
+      // 2e12T_medium
+      if( m_isMC || (run<188902 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_2e12T_medium())) ){
+        flags |= TRIG_2e12T_medium;
+      }
+      // 2e12Tvh_medium
+      if( m_isMC || (run>188901 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_2e12Tvh_medium())) ){
+        flags |= TRIG_2e12Tvh_medium;
+      }
+    }
 
     // assign the flags in the map
     m_eleTrigFlags[iEl] = flags;
@@ -294,4 +332,30 @@ bool SusyD3PDAna::passBadMuon()
 bool SusyD3PDAna::passCosmic()
 {
   return !IsCosmic(m_susyObj, &d3pd.muo, m_baseMuons, 1., 0.2);
+}
+
+/*--------------------------------------------------------------------------------*/
+// Cross section and lumi scaling
+/*--------------------------------------------------------------------------------*/
+float SusyD3PDAna::getXsecWeight()
+{
+  int id = d3pd.truth.channel_number();
+  if(m_xsecMap.find(id) == m_xsecMap.end()) {
+    m_xsecMap[id] = m_susyXsec->process(id);
+  }
+  return m_xsecMap[id].xsect() * m_xsecMap[id].kfactor() * m_xsecMap[id].efficiency();
+}
+
+/*--------------------------------------------------------------------------------*/
+// Luminosity normalization
+/*--------------------------------------------------------------------------------*/
+float SusyD3PDAna::getLumiWeight()
+{ return m_lumi / m_sumw; }
+
+/*--------------------------------------------------------------------------------*/
+// Pileup reweighting
+/*--------------------------------------------------------------------------------*/
+float SusyD3PDAna::getPileupWeight()
+{
+  return m_pileup->GetCombinedWeight(d3pd.evt.RunNumber(), d3pd.truth.channel_number(), d3pd.evt.averageIntPerXing());
 }

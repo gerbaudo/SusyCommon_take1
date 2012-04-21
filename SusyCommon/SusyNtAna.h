@@ -3,6 +3,11 @@
 
 #include "TSelector.h"
 #include "TTree.h"
+#include "THnSparse.h"
+
+#include "ReweightUtils/APWeightEntry.h"
+#include "ReweightUtils/APReweightND.h"
+#include "ReweightUtils/APEvtWeight.h"
 
 #include "SusyCommon/SusyNtObject.h"
 
@@ -68,6 +73,12 @@ class SusyNtAna : public TSelector
     uint get2EleTrigger();
     uint get2MuoTrigger();
 
+    // Trigger reweighting
+    void loadTriggerMaps();
+    APReweightND* loadTrigWeighter(TFile* f, TString chain);
+    APReweightND* getEleTrigWeighter(uint trigFlag);
+    APReweightND* getMuoTrigWeighter(uint trigFlag);
+
     // Event and object dumps
     void dumpEvent();
     void dumpBaselineObjects();
@@ -108,6 +119,12 @@ class SusyNtAna : public TSelector
     LeptonVector        m_signalLeptons;        // signal leptons
     JetVector           m_signalJets;           // signal jets
 
+    //
+    // Triger reweighting
+    //
+
+    std::map<int, APReweightND*>        m_elTrigWeightMap;
+    std::map<int, APReweightND*>        m_muTrigWeightMap;
 };
 
 
