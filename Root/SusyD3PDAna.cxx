@@ -13,7 +13,9 @@ using namespace std;
 SusyD3PDAna::SusyD3PDAna() : 
         m_sample(""),
         m_lumi(4700),
-        m_sumw(1)
+        m_sumw(1),
+        m_pileup(0),
+        m_susyXsec(0)
 {
 }
 /*--------------------------------------------------------------------------------*/
@@ -52,8 +54,10 @@ void SusyD3PDAna::Begin(TTree* /*tree*/)
   m_fakeMetEst.initialize("$ROOTCOREDIR/data/MultiLep/fest_periodF_v1.root");
 
   // SUSY cross sections
-  string xsecFileName  = gSystem->ExpandPathName("$ROOTCOREDIR/data/SUSYTools/susy_crosssections.txt");
-  m_susyXsec = new SUSY::CrossSectionDB(xsecFileName);
+  if(m_isMC){
+    string xsecFileName  = gSystem->ExpandPathName("$ROOTCOREDIR/data/SUSYTools/susy_crosssections.txt");
+    m_susyXsec = new SUSY::CrossSectionDB(xsecFileName);
+  }
 
   // GRL
   if(!m_isMC){
@@ -109,8 +113,10 @@ void SusyD3PDAna::Terminate()
   if(m_dbg) cout << "SusyD3PDAna::Terminate" << endl;
   m_susyObj.finalize();
 
-  delete m_susyXsec;
-  delete m_pileup;
+  if(m_isMC){
+    delete m_susyXsec;
+    delete m_pileup;
+  }
 }
 
 /*--------------------------------------------------------------------------------*/
