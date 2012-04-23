@@ -1,6 +1,6 @@
 #!/bin/bash
 
-iteration="i8"
+iteration="i9"
 #iteration="test4"
 
 # SUSY D3PD grid datasets
@@ -51,6 +51,7 @@ for inDS in ${datasets[@]}; do
 	# prun command
 	prun --exec "$command" --useRootCore --tmpDir /tmp \
              --excludedSite=MANC,QMUL,MWT2,ECDF,WEIZMANN,RHUL,OX,SARA,SHEF,PIC \
+             --nGBPerJob=MAX \
              --extFile '*.so,*.root' --match "*root*" --outputs "susyNt.root" \
              --inTarBall=area.tar \
              --athenaTag=17.0.5.5 \

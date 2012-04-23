@@ -1,6 +1,6 @@
 #!/bin/bash
 
-iteration="i8"
+iteration="i9"
 #iteration="test4"
 
 # get the samples of interest
@@ -38,6 +38,7 @@ for line in ${matches[@]}; do
 	# prun command
 	prun --exec "$command" --tmpDir /tmp --inTarBall=area.tar --useRootCore \
                 --excludedSite=MANC,QMUL,MWT2,ECDF,WEIZMANN,RHUL,OX,SARA,SHEF,PIC \
+                --nGBPerJob=MAX \
 		--match "*root*" --outputs "susyNt.root" \
                 --extFile '*.so,*.root' \
                 --athenaTag=17.0.5.5 \
