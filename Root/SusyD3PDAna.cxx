@@ -275,7 +275,7 @@ void SusyD3PDAna::matchMuonTriggers()
   if(m_dbg) cout << "matchMuonTriggers" << endl;
 
   // New prescription!
-  //int run = d3pd.evt.RunNumber();
+  int run = d3pd.evt.RunNumber();
   // loop over all baseline muons
   for(uint i=0; i<m_baseMuons.size(); i++){
     int iMu = m_baseMuons[i];
@@ -286,11 +286,11 @@ void SusyD3PDAna::matchMuonTriggers()
 
     if(lv->Pt() > 20.*GeV){
       // mu18
-      if(m_isMC || matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18())) {
+      if(m_isMC || (run<186516 && matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18()))) {
         flags |= TRIG_mu18;
       }
       // mu18_medium
-      if(m_isMC || matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18_medium())) {
+      if(m_isMC || (run>=186516 && matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18_medium()))) {
         flags |= TRIG_mu18_medium;
       }
     }
