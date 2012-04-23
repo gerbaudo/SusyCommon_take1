@@ -3,6 +3,11 @@
 
 #include "TSelector.h"
 #include "TTree.h"
+#include "THnSparse.h"
+
+#include "ReweightUtils/APWeightEntry.h"
+#include "ReweightUtils/APReweightND.h"
+#include "ReweightUtils/APEvtWeight.h"
 
 #include "SusyCommon/SusyNtObject.h"
 
@@ -18,7 +23,7 @@ class SusyNtAna : public TSelector
   public:
 
     // Constructor and destructor
-    SusyNtAna(TTree* /*tree*/ = 0);
+    SusyNtAna();
     virtual ~SusyNtAna(){};
 
     // SusyNt object, access to the SusyNt variables
@@ -51,17 +56,41 @@ class SusyNtAna : public TSelector
       return kTRUE;
     }
 
+    // Get event weight - contains generator, pileup, xsec, and lumi weights
+    virtual float getEventWeight();
+
     // Object selection
     void clearObjects();
     void selectLeptons();
+    void selectJets();
     bool isSignalElectron(const Susy::Electron*);
     bool isSignalMuon(const Susy::Muon*);
-    void selectJets();
     bool isSignalJet(const Susy::Jet*);
+
+    // Run dependent trigger chains
+    uint getEleTrigger();
+    uint getMuoTrigger();
+    uint get2EleTrigger();
+    uint get2MuoTrigger();
+
+    // Trigger reweighting
+    void loadTriggerMaps();
+    APReweightND* loadTrigWeighter(TFile* f, TString chain);
+    APReweightND* getEleTrigWeighter(uint trigFlag);
+    APReweightND* getMuoTrigWeighter(uint trigFlag);
+
+    // Event and object dumps
+    void dumpEvent();
+    void dumpBaselineObjects();
+    void dumpSignalObjects();
 
     // Debug level
     void setDebug(int dbg) { m_dbg = dbg; }
     int dbg() { return m_dbg; }
+
+    // Sample name - can be used however you like
+    std::string sampleName() { return m_sample; }
+    void setSampleName(std::string s) { m_sample = s; }
 
     // Access tree
     TTree* getTree() { return m_tree; }
@@ -76,6 +105,8 @@ class SusyNtAna : public TSelector
 
     int m_dbg;                  // debug level
 
+    std::string m_sample;       // sample name string
+
     //
     // Object collections
     //
@@ -88,6 +119,12 @@ class SusyNtAna : public TSelector
     LeptonVector        m_signalLeptons;        // signal leptons
     JetVector           m_signalJets;           // signal jets
 
+    //
+    // Triger reweighting
+    //
+
+    std::map<int, APReweightND*>        m_elTrigWeightMap;
+    std::map<int, APReweightND*>        m_muTrigWeightMap;
 };
 
 

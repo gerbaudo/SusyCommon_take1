@@ -33,7 +33,8 @@ namespace Susy
 // Global constants
 //-----------------------------------------------------------------------------------
 const float GeV = 1000.;
-const float MZ = 91.19;
+//const float MZ = 91.19;
+const float MZ = 91.2;
 
 //-----------------------------------------------------------------------------------
 // Convenience typedefs
@@ -49,6 +50,18 @@ typedef std::vector<const Susy::Lepton*>   LeptonVector;
 typedef std::vector<const Susy::Electron*> ElectronVector;
 typedef std::vector<const Susy::Muon*>     MuonVector;
 typedef std::vector<const Susy::Jet*>      JetVector;
+
+//-----------------------------------------------------------------------------------
+// Global enums
+//-----------------------------------------------------------------------------------
+enum DataStream
+{
+  Stream_Unknown = 0,
+  Stream_MC,
+  Stream_Muons,
+  Stream_Egamma,
+  Stream_N
+};
 
 //-----------------------------------------------------------------------------------
 // LepInfo - a simple, transient class for interacting with leptons in SusyNt
@@ -70,9 +83,12 @@ class LepInfo
 //-----------------------------------------------------------------------------------
 // Global functions
 //-----------------------------------------------------------------------------------
+std::string streamName(DataStream);
+
 bool isSameFlav(const Susy::Lepton* l1, const Susy::Lepton* l2);
 bool isSFOS(const Susy::Lepton* l1, const Susy::Lepton* l2);
 bool isSFSS(const Susy::Lepton* l1, const Susy::Lepton* l2);
+bool hasSFOS(const LeptonVector& leps);
 
 float Mll(const Susy::Lepton* l1, const Susy::Lepton* l2);
 float Mlll(const Susy::Lepton* l1, const Susy::Lepton* l2, const Susy::Lepton* l3);
@@ -81,8 +97,13 @@ float Mt(const Susy::Lepton* lep, const Susy::Met* met);
 bool isZ(const Susy::Lepton* l1, const Susy::Lepton* l2, float massWindow=10.);
 bool hasZ(const LeptonVector& leps, float massWindow=10.);
 
+bool hasBJet(const JetVector& jets, float weight=1.8);
+
 // for pointer sorting
 bool comparePt(const TLorentzVector* p1, const TLorentzVector* p2);
+// find lepton in a collection
+bool findLepton(const Susy::Lepton* lep, const LeptonVector& leptons);
+
 
 //-----------------------------------------------------------------------------------
 // Trigger flags
@@ -96,6 +117,9 @@ enum ElecTrigBit
   BIT_e20_medium,
   BIT_e22_medium,
   BIT_e22vh_medium1,
+  BIT_2e12_medium,
+  BIT_2e12T_medium,
+  BIT_2e12Tvh_medium,
   N_EL_TRIG
 };
 enum MuonTrigBit
@@ -104,6 +128,7 @@ enum MuonTrigBit
   BIT_mu10_loose,
   BIT_mu18,
   BIT_mu18_medium,
+  BIT_2mu10_loose,
   N_MU_TRIG
 };
 
@@ -112,9 +137,13 @@ enum MuonTrigBit
 const uint TRIG_e20_medium      = 1<<BIT_e20_medium;
 const uint TRIG_e22_medium      = 1<<BIT_e22_medium;
 const uint TRIG_e22vh_medium1   = 1<<BIT_e22vh_medium1;
+const uint TRIG_2e12_medium     = 1<<BIT_2e12_medium;
+const uint TRIG_2e12T_medium    = 1<<BIT_2e12T_medium;
+const uint TRIG_2e12Tvh_medium  = 1<<BIT_2e12Tvh_medium;
 // muon
 const uint TRIG_mu18            = 1<<BIT_mu18;
 const uint TRIG_mu18_medium     = 1<<BIT_mu18_medium;
+const uint TRIG_2mu10_loose     = 1<<BIT_2mu10_loose;
 
 // Trigger chain names, for convenience
 stringvector getEleTrigChains();

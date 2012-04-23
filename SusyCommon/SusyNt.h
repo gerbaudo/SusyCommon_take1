@@ -61,12 +61,18 @@ namespace Susy
       uint mcType;              // MCTruthClassifier particle type
       uint mcOrigin;            // MCTruthClassifier particle origin
 
+      float effSF;              // Efficiency scale factor
+      float errEffSF;           // Uncertainty on the efficiency scale factor
+
       uint trigFlags;           // Bit word representing matched trigger chains
 
       // trigger matching
-      bool matchTrig(uint mask){
+      // provide the trigger chain via bit mask, 
+      // e.g. TRIG_mu18
+      bool matchTrig(uint mask) const {
         return (trigFlags & mask) == mask;
       }
+
 
       // polymorphism, baby!!
       virtual bool isEle() const { return false; }
@@ -81,7 +87,7 @@ namespace Susy
         Particle::clear();
       }
       
-      ClassDef(Lepton, 2);
+      ClassDef(Lepton, 4);
   };
 
   // Electron class
@@ -193,25 +199,35 @@ namespace Susy
       uint run;                 // run number 
       uint event;               // event number
       uint lb;                  // lumi block number
+      DataStream stream;        // DataStream enum, defined in SusyDefs.h
+
       uint nVtx;                // number of good vertices
 
       bool isMC;                // is MC flag
       uint mcChannel;           // MC channel ID number (mc run number)
       float w;                  // MC generator weight
 
+      // Reweighting and scaling
+      float wPileup;            // pileup weight
+      float xsec;               // cross section * kfactor * efficiency, from SUSY db
+      float lumiSF;             // luminosity scale factor = integrated lumi / sum of mc weights
+
+      // Combined normalized event weight
+      float fullWeight() const { return wPileup*xsec*lumiSF; }
+
       // print event
-      void print() const{
-        std::cout << "run " << run << " event " << event << " isMC " << isMC << std::endl;
-      }
+      void print() const;
 
       // clear vars
       void clear(){
         run = event = lb = nVtx = 0;
+        stream = Stream_Unknown;
         isMC = false;
         mcChannel = w = 0;
+        wPileup = xsec = lumiSF = 1;
       }
 
-      ClassDef(Event, 2);
+      ClassDef(Event, 4);
   };
 
 };

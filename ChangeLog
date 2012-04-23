@@ -1,5 +1,24 @@
 # vim: set noexpandtab:
 
+2012-04-22 Steve
+	* New muon trigger matching, doing it myself since common code approach was weird
+	* I also increased the SusyNtMaker filter to >=2 baseline leptons, for now
+
+2012-04-21 Steve
+	* Added cross sections from SUSYTools
+	* Pileup reweighting
+	* summed mc weights and lumi scaling (lumi/sumw)
+	* di-electron trigger matching
+		* di-muon feature matching prescription not available
+	* Added trigger reweighting maps to SusyNtAna
+
+2012-04-19 Steve
+	* Added DataStream
+	* fix jet index usage when filling SusyNt
+	* Started adding some trigger matching stuff
+	* Added sample name to SusyNtAna
+	* removed 'inline' for most SusyDef functions
+
 2012-04-11 Steve
 	* Added ChainHelper for easy TChain building
 	* Implemented signal obj selection in SusyNtAna

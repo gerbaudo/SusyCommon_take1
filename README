@@ -16,11 +16,10 @@ svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/Susy
 # Or the current recommended tag
 svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-00-00-01 SusyCommon
 
-# More stuff to come!
-# There will eventually be a framework for producing a small
-# analysis ntuple on the grid which can be analyzed locally
-# for fast turnaround of plots and numbers
+# To make a tag, from this directory
+svn cp . svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-XX-YY-ZZ -m "some message"
 
+# More stuff to come!
 
 
 # TODO

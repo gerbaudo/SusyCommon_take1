@@ -20,7 +20,7 @@ class SusyNtMaker : public SusyD3PDAna
   public:
 
     // Constructor and destructor
-    SusyNtMaker(TTree* /*tree*/ = 0);
+    SusyNtMaker();
     virtual ~SusyNtMaker();
 
     // Begin is called before looping on entries

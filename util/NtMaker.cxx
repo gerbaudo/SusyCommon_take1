@@ -37,6 +37,9 @@ void help()
   cout << "  -s sample name, sets isMC flag"    << endl;
   cout << "     use e.g. 'ttbar', 'DataG', etc" << endl;
 
+  cout << "  -w set sum of mc weights for norm" << endl;
+  cout << "     default: 1"                     << endl;
+
   cout << "  -h print this help"                << endl;
 }
 
@@ -48,6 +51,7 @@ int main(int argc, char** argv)
   int nEvt = -1;
   int nSkip = 0;
   int dbg = 0;
+  float sumw = 1;
   string sample;
   string fileList = "fileList.txt";
   
@@ -66,6 +70,8 @@ int main(int argc, char** argv)
       fileList = argv[++i];
     else if (strcmp(argv[i], "-s") == 0)
       sample = argv[++i];
+    else if (strcmp(argv[i], "-w") == 0)
+      sumw = atof(argv[++i]);
     //if (strcmp(argv[i], "-h") == 0)
     else
     {
@@ -80,6 +86,7 @@ int main(int argc, char** argv)
   cout << "  nSkip   " << nSkip    << endl;
   cout << "  dbg     " << dbg      << endl;
   cout << "  input   " << fileList << endl;
+  cout << "  sumw    " << sumw     << endl;
   cout << endl;
 
   // Build the input chain
@@ -93,6 +100,7 @@ int main(int argc, char** argv)
   SusyNtMaker* susyAna = new SusyNtMaker();
   susyAna->setDebug(dbg);
   susyAna->setSample(sample);
+  susyAna->setSumw(sumw);
 
   // GRL
   TString grl = gSystem->ExpandPathName("$ROOTCOREDIR/data/MultiLep/data11_7TeV.periodAllYear_DetStatus-v36-pro10_CoolRunQuery-00-04-08_Susy.xml");

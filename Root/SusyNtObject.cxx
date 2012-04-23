@@ -5,7 +5,9 @@ using namespace Susy;
 
 
 /*--------------------------------------------------------------------------------*/
-// SusyNtObject constructor for writing
+// SusyNtObject constructor for writing only.
+// This is going to get ugly when I add all the systematics. I may need a better plan
+// Maybe I can use a preprocessor command to generate this code for me
 /*--------------------------------------------------------------------------------*/
 SusyNtObject::SusyNtObject():
         evt(this, "event", 0),
@@ -17,7 +19,7 @@ SusyNtObject::SusyNtObject():
 }
 
 /*--------------------------------------------------------------------------------*/
-// SusyNtObject constructor for reading
+// SusyNtObject constructor for reading and writing
 /*--------------------------------------------------------------------------------*/
 SusyNtObject::SusyNtObject(const Long64_t& entry):
         evt(this, "event", &entry),
@@ -29,16 +31,22 @@ SusyNtObject::SusyNtObject(const Long64_t& entry):
 }
 
 /*--------------------------------------------------------------------------------*/
-// Connect the objects to an output tree
+// Set branches active for writing.  Only active branches are written
 /*--------------------------------------------------------------------------------*/
-void SusyNtObject::WriteTo(TTree* tree)
+void SusyNtObject::SetActive()
 {
   evt.SetActive(true);
   ele.SetActive(true);
   muo.SetActive(true);
   jet.SetActive(true);
   met.SetActive(true);
+}
 
+/*--------------------------------------------------------------------------------*/
+// Connect the objects to an output tree
+/*--------------------------------------------------------------------------------*/
+void SusyNtObject::WriteTo(TTree* tree)
+{
   evt.WriteTo(tree);
   ele.WriteTo(tree);
   muo.WriteTo(tree);
