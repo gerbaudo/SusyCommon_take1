@@ -214,9 +214,6 @@ void SusyD3PDAna::matchElectronTriggers()
 {
   if(m_dbg) cout << "matchElectronTriggers" << endl;
   int run = d3pd.evt.RunNumber();
-  //bool e20_medium    = d3pd.trig.EF_e20_medium();
-  //bool e22_medium    = d3pd.trig.EF_e22_medium();
-  //bool e22vh_medium1 = d3pd.trig.EF_e22vh_medium1();
 
   // loop over all baseline electrons
   for(uint i=0; i<m_baseElectrons.size(); i++){
@@ -228,29 +225,29 @@ void SusyD3PDAna::matchElectronTriggers()
 
     if(lv->Pt() > 25.*GeV){
       // e20_medium
-      if( m_isMC || (run<186873 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e20_medium())) ){
+      if( m_isMC || (run<186873 && matchElectronTrigger(lv, d3pd.trig.trig_EF_el_EF_e20_medium())) ){
         flags |= TRIG_e20_medium;
       }
       // e22_medium
-      if( m_isMC || (run<188902 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e22_medium())) ){
+      if( m_isMC || (run<188902 && matchElectronTrigger(lv, d3pd.trig.trig_EF_el_EF_e22_medium())) ){
         flags |= TRIG_e22_medium;
       }
       // e22vh_medium1
-      if( m_isMC || (run>188901 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_e22vh_medium1())) ){
+      if( m_isMC || (run>188901 && matchElectronTrigger(lv, d3pd.trig.trig_EF_el_EF_e22vh_medium1())) ){
         flags |= TRIG_e22vh_medium1;
       }
     }
     if(lv->Pt() > 15.*GeV){
       // 2e12_medium
-      if( m_isMC || (run<186873 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_2e12_medium())) ){
+      if( m_isMC || (run<186873 && matchElectronTrigger(lv, d3pd.trig.trig_EF_el_EF_2e12_medium())) ){
         flags |= TRIG_2e12_medium;
       }
       // 2e12T_medium
-      if( m_isMC || (run>186873 && run<188902 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_2e12T_medium())) ){
+      if( m_isMC || (run>186873 && run<188902 && matchElectronTrigger(lv, d3pd.trig.trig_EF_el_EF_2e12T_medium())) ){
         flags |= TRIG_2e12T_medium;
       }
       // 2e12Tvh_medium
-      if( m_isMC || (run>188901 && matchElectronTrigger(lv->Eta(), lv->Phi(), d3pd.trig.trig_EF_el_EF_2e12Tvh_medium())) ){
+      if( m_isMC || (run>188901 && matchElectronTrigger(lv, d3pd.trig.trig_EF_el_EF_2e12Tvh_medium())) ){
         flags |= TRIG_2e12Tvh_medium;
       }
     }
@@ -260,18 +257,13 @@ void SusyD3PDAna::matchElectronTriggers()
   }
 }
 /*--------------------------------------------------------------------------------*/
-// Electron trigger matching
-/*--------------------------------------------------------------------------------*/
-//bool SusyD3PDAna::matchElectronTrigger(float eta, float phi, D3PDReader::VarHandle< vector<int>* > & trigHandle)
-bool SusyD3PDAna::matchElectronTrigger(float eta, float phi, vector<int>* roi)
+//bool SusyD3PDAna::matchElectronTrigger(float eta, float phi, vector<int>* trigBools)
+bool SusyD3PDAna::matchElectronTrigger(const TLorentzVector* lv, vector<int>* trigBools)
 {
-  //if(!trigHandle.IsAvailable()) return false;
-  //vector<int>* roi = trigHandle();
-  //if(roi->size()==0) return false;
   // matched trigger index - not used
   static int indexEF = -1;
   // Use function defined in egammaAnalysisUtils/egammaTriggerMatching.h
-  return PassedTriggerEF(eta, phi, roi, indexEF, d3pd.trig.trig_EF_el_n(), 
+  return PassedTriggerEF(lv->Eta(), lv->Phi(), trigBools, indexEF, d3pd.trig.trig_EF_el_n(), 
                          d3pd.trig.trig_EF_el_eta(), d3pd.trig.trig_EF_el_phi());
 }
 
@@ -281,23 +273,84 @@ bool SusyD3PDAna::matchElectronTrigger(float eta, float phi, vector<int>* roi)
 void SusyD3PDAna::matchMuonTriggers()
 {
   if(m_dbg) cout << "matchMuonTriggers" << endl;
+
+  // New prescription!
+  //int run = d3pd.evt.RunNumber();
+  // loop over all baseline muons
+  for(uint i=0; i<m_baseMuons.size(); i++){
+    int iMu = m_baseMuons[i];
+    const TLorentzVector* lv = & m_susyObj.GetMuonTLV(iMu);
+    
+    // trigger flags
+    uint flags = 0;
+
+    if(lv->Pt() > 20.*GeV){
+      // mu18
+      if(m_isMC || matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18())) {
+        flags |= TRIG_mu18;
+      }
+      // mu18_medium
+      if(m_isMC || matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18_medium())) {
+        flags |= TRIG_mu18_medium;
+      }
+    }
+    if(lv->Pt() > 10.*GeV){
+      // 2mu10_loose
+      if(m_isMC || matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_2mu10_loose())) {
+        flags |= TRIG_2mu10_loose;
+      }
+    }
+  }
+
   // This seems very complicated, and 2L seems to match muons differently than 3L.
   // For now, just use the common code 3L matching function.
   // TODO: come back to this and try to improve it.
 
   // Get trigger plateau muons - but use baseline muons instead of signal muons
-  vector<int> plateau_muons = get_muons_signal_triggerplateau(&d3pd.muo, m_baseMuons, m_susyObj, 20.*GeV);
+  //vector<int> plateau_muons = get_muons_signal_triggerplateau(&d3pd.muo, m_baseMuons, m_susyObj, 20.*GeV);
   // Get muons which matched to trigger
-  vector<int> matched_muons = get_muons_triggered(&d3pd.muo, plateau_muons, &d3pd.trig, 0.15);
+  //vector<int> matched_muons = get_muons_triggered(&d3pd.muo, plateau_muons, &d3pd.trig, 0.15);
 
   // Now assign the flags
   // I guess I'll just flag them all until I have a different prescription
+  /*
   for(uint i=0; i < matched_muons.size(); i++){
     uint flags = 0;
     flags |= TRIG_mu18;
     flags |= TRIG_mu18_medium;
     m_muoTrigFlags[ matched_muons[i] ] = flags;
-  }
+  }*/
+}
+/*--------------------------------------------------------------------------------*/
+bool SusyD3PDAna::matchMuonTrigger(const TLorentzVector* lv, vector<int>* passTrig)
+{
+  // loop over muon trigger features
+  for(int iTrig=0; iTrig < d3pd.trig.trig_EF_trigmuonef_n(); iTrig++){
+
+    // Check to see if this feature passed chain we want
+    if(passTrig->at(iTrig)){
+
+      // Loop over muon EF tracks
+      TLorentzVector lvTrig;
+      for(int iTrk=0; iTrk < d3pd.trig.trig_EF_trigmuonef_track_n()->at(iTrig); iTrk++){
+
+        lvTrig.SetPtEtaPhiM( d3pd.trig.trig_EF_trigmuonef_track_CB_pt()->at(iTrig).at(iTrk),
+                             d3pd.trig.trig_EF_trigmuonef_track_CB_eta()->at(iTrig).at(iTrk),
+                             d3pd.trig.trig_EF_trigmuonef_track_CB_phi()->at(iTrig).at(iTrk),
+                             0 );       // only eta and phi used to compute dR anyway
+        // Require combined offline track...?
+        if(!d3pd.trig.trig_EF_trigmuonef_track_CB_hasCB()->at(iTrig).at(iTrk)) continue;
+        float dR = lv->DeltaR(lvTrig);
+        if(dR < 0.15){
+          return true;
+        }
+
+      } // loop over EF tracks
+    } // trigger object passes chain?
+  } // loop over trigger objects
+
+  // matching failed
+  return false;
 }
 
 /*--------------------------------------------------------------------------------*/

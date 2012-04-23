@@ -1,6 +1,10 @@
 # vim: set noexpandtab:
 
-2012-04-19 Steve
+2012-04-22 Steve
+	* New muon trigger matching, doing it myself since common code approach was weird
+	* I also increased the SusyNtMaker filter to >=2 baseline leptons, for now
+
+2012-04-21 Steve
 	* Added cross sections from SUSYTools
 	* Pileup reweighting
 	* summed mc weights and lumi scaling (lumi/sumw)

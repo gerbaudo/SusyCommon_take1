@@ -56,8 +56,8 @@ class SusyNtAna : public TSelector
       return kTRUE;
     }
 
-    // Get event weight - currently only MC weight
-    float getEventWeight();
+    // Get event weight - contains generator, pileup, xsec, and lumi weights
+    virtual float getEventWeight();
 
     // Object selection
     void clearObjects();

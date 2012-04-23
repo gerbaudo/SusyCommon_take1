@@ -124,6 +124,8 @@ stringvector getMuTrigChains()
 {
   stringvector muTriggers;
   muTriggers.resize(N_MU_TRIG);
+  muTriggers[BIT_mu6]           = "EF_mu6";
+  muTriggers[BIT_mu10_loose]    = "EF_mu10_loose";
   muTriggers[BIT_mu18]          = "EF_mu18";
   muTriggers[BIT_mu18_medium]   = "EF_mu18_medium";
   muTriggers[BIT_2mu10_loose]   = "EF_2mu10_loose";

@@ -153,7 +153,8 @@ bool SusyNtMaker::selectEvent()
   matchTriggers();
 
   // For filling the output tree, require at least one baseline lepton
-  if(m_baseLeptons.size()<1) return false;
+  // Actually, I'm gonna speed this up and increase it to 2
+  if(m_baseLeptons.size()<2) return false;
 
   return true;
 }

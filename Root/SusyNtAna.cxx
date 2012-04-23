@@ -105,6 +105,7 @@ void SusyNtAna::Terminate()
 /*--------------------------------------------------------------------------------*/
 float SusyNtAna::getEventWeight()
 {
+  // If data, these should all be one
   const Event* evt = nt.evt();
   return evt->w * evt->wPileup * evt->xsec * evt->lumiSF;
 }

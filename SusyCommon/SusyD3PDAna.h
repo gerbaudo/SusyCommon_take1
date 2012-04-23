@@ -107,9 +107,10 @@ class SusyD3PDAna : public SusyD3PDInterface
       matchMuonTriggers();
     }
     void matchElectronTriggers();
-    //bool matchElectronTrigger(float eta, float phi, D3PDReader::VarHandle< std::vector<int>* >& trigHandle);
-    bool matchElectronTrigger(float eta, float phi, std::vector<int>* roi);
+    //bool matchElectronTrigger(float eta, float phi, std::vector<int>* roi);
+    bool matchElectronTrigger(const TLorentzVector* lv, std::vector<int>* trigBools);
     void matchMuonTriggers();
+    bool matchMuonTrigger(const TLorentzVector* lv, std::vector<int>* trigBools);
 
   protected:
 
