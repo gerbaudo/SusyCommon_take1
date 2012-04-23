@@ -16,6 +16,9 @@ svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/Susy
 # Or the current recommended tag
 svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-00-00-01 SusyCommon
 
+# To make a tag, from this directory
+svn cp . svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-XX-YY-ZZ -m "some message"
+
 # More stuff to come!
 
 
