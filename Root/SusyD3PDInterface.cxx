@@ -14,6 +14,7 @@ SusyD3PDContainer::SusyD3PDContainer(const Long64_t& entry) :
         muo(entry),
         jet(entry),
         met(entry),
+        trk(entry),
         vtx(entry),
         trig(entry),
         gen(entry),
@@ -31,6 +32,7 @@ void SusyD3PDContainer::ReadFrom(TTree* tree)
   muo.ReadFrom(tree);
   jet.ReadFrom(tree);
   met.ReadFrom(tree);
+  trk.ReadFrom(tree);
   vtx.ReadFrom(tree);
   trig.ReadFrom(tree);
   gen.ReadFrom(tree);

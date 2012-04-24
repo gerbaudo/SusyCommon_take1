@@ -38,8 +38,8 @@ void Jet::print() const
 {
   cout.precision(2);
   cout << fixed << "Jet : pt " << setw(6) << Pt() << " eta " << setw(5) << Eta()
-       << " jvf " << setw(5) << jvf
-       << " combNN " << setw(5) << combNN
+       << " jvf " << setw(4) << jvf
+       << " btag " << setw(5) << combNN
        << endl;
   cout.precision(6);
   cout.unsetf(ios_base::fixed);

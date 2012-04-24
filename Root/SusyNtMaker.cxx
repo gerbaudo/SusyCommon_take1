@@ -1,4 +1,5 @@
 #include "MultiLep/MuonTools.h"
+#include "MultiLep/ElectronTools.h"
 #include "SusyCommon/SusyNtMaker.h"
 
 using namespace std;
@@ -217,12 +218,18 @@ void SusyNtMaker::fillElectronVars(const LeptonInfo* lepIn)
 
   eleOut->ptcone20      = element->ptcone20()/GeV;
   eleOut->q             = element->charge();
-  // add d0 later, not sure if d0_exPV is available in the d3pds
   eleOut->mcType        = m_isMC? element->type() : 0;
   eleOut->mcOrigin      = m_isMC? element->origin() : 0;
   eleOut->clusEta       = element->cl_eta();
   eleOut->mediumPP      = element->mediumPP();
   eleOut->tightPP       = element->tightPP();
+
+  // Get d0 from track
+  int trkIdx            = get_electron_track( &d3pd.ele, lepIn->idx(), &d3pd.trk );
+  if(trkIdx!=-99){
+    eleOut->d0          = d3pd.trk.d0_wrtPV()->at(trkIdx);
+    eleOut->errD0       = sqrt(d3pd.trk.cov_d0_wrtPV()->at(trkIdx));
+  }
 
   eleOut->trigFlags     = m_eleTrigFlags[ lepIn->idx() ];
 
@@ -248,7 +255,7 @@ void SusyNtMaker::fillMuonVars(const LeptonInfo* lepIn)
   muOut->q              = element->charge();
   muOut->ptcone20       = element->ptcone20()/GeV;
   muOut->d0             = element->d0_exPV();
-  muOut->errD0          = fabs(element->cov_d0_exPV());
+  muOut->errD0          = sqrt(element->cov_d0_exPV());
   muOut->isCombined     = element->isCombinedMuon();
 
   muOut->mcType         = trueMuon? trueMuon->type()   : 0;

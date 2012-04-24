@@ -1,5 +1,9 @@
 # vim: set noexpandtab:
 
+2012-04-24 Steve
+	* Added TrackD3PDObject for reading track variables from d3pd
+	* Added d0 and error for electrons
+
 2012-04-22 Steve
 	* New muon trigger matching, doing it myself since common code approach was weird
 	* I also increased the SusyNtMaker filter to >=2 baseline leptons, for now

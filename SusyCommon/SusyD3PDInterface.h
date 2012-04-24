@@ -13,6 +13,7 @@
 #include "MultiLep/MuonD3PDObject.h"
 #include "MultiLep/JetD3PDObject.h"
 #include "MultiLep/METD3PDObject.h"
+#include "MultiLep/TrackD3PDObject.h"
 #include "MultiLep/EFTriggerD3PDObject.h"
 #include "MultiLep/VertexD3PDObject.h"
 #include "MultiLep/GenEventD3PDObject.h"
@@ -43,6 +44,7 @@ class SusyD3PDContainer
     D3PDReader::MuonD3PDObject          muo;
     D3PDReader::JetD3PDObject           jet;
     D3PDReader::METD3PDObject           met;
+    D3PDReader::TrackD3PDObject         trk;
     D3PDReader::VertexD3PDObject        vtx;
     D3PDReader::EFTriggerD3PDObject     trig;
     D3PDReader::GenEventD3PDObject      gen;

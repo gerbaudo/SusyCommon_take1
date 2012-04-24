@@ -166,7 +166,7 @@ void SusyD3PDAna::selectSignalObjects()
   // TODO: make these functions more symmetric
   m_sigElectrons = get_electrons_signal(&d3pd.ele, m_baseElectrons, m_susyObj, 10.*GeV);
   m_sigMuons     = get_muons_signal(&d3pd.muo, m_susyObj, m_baseMuons, 10.*GeV, 1.8*GeV);
-  m_sigJets      = get_jet_signal(&d3pd.jet, m_susyObj, m_baseJets, 30.*GeV, 2.5, 0.75);
+  m_sigJets      = get_jet_signal(&d3pd.jet, m_susyObj, m_baseJets, 20.*GeV, 2.5, 0.75);
 
   // combine leptons
   m_sigLeptons   = buildLeptonInfos(&d3pd.ele, m_sigElectrons, &d3pd.muo, m_sigMuons, m_susyObj);
@@ -361,6 +361,7 @@ bool SusyD3PDAna::passLarHoleVeto()
 {
   TVector2 metVector = m_met.Vect().XYvector();
   vector<int> goodJets;
+  // Do I still need these jets with no eta cut?
   vector<int> jets = get_jet_baseline( &d3pd.jet, !m_isMC, m_susyObj, 20.*GeV, 9999999, JetErr::NONE, false, goodJets );
   return !check_jet_larhole(&d3pd.jet, jets, !m_isMC, m_susyObj, 180614, metVector, &m_fakeMetEst);
 }
