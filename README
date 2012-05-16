@@ -8,25 +8,78 @@
 
 
 # Link to code in SVN browser
-https://svnweb.cern.ch/trac/atlasgrp/browser/Institutes/UCIrvine/SUSYAnalysis/SusyCommon
+https://svnweb.cern.ch/trac/atlasinst/browser/Institutes/UCIrvine/SUSYAnalysis/SusyCommon
 
 # To checkout the package trunk
-svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/trunk SusyCommon
+svn co svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/trunk SusyCommon
 
-# Or the current recommended tag
-svn co svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-00-00-01 SusyCommon
+# Or the current recommended tag (currently changing)
+svn co svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-00-00-01 SusyCommon
 
 # To make a tag, from this directory
-svn cp . svn+ssh://svn.cern.ch/reps/atlasgrp/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-XX-YY-ZZ -m "some message"
+svn cp . svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UCIrvine/SUSYAnalysis/SusyCommon/tags/SusyCommon-XX-YY-ZZ -m "some message"
 
+# To install, check out the MultiLep Common code and run install script 
+# Common code is in a temporary location because svn was down:
+#svn co svn+ssh://svn.cern.ch/reps/atlasinst/Physics/SUSY/Analyses/Multilepton/trunk/fiveinvfb/MultiLep MultiLep
+svn co svn+ssh://svn.cern.ch/reps/atlasusr/lucian/Multilepton/MultiLep MultiLep
+source MultiLep/installscripts/install_script.sh
+
+# for examples, here is my analysis code which depends on this package
+# Currently on UCI Tier3, I need to update to update svn later
+/data11/home/sfarrell/workarea/SusyAna_r17/SusyAna
+
+
+#------------------------------------------------------------------------------------
+# Overview of the package
+#------------------------------------------------------------------------------------
+
+SusyDefs
+  - typedefs, constants, global functions, etc.
+
+SusyD3PDInterface
+  - TSelector for processing Susy D3PDs
+  - Provides access to d3pd objects via 'd3pd' container
+
+SusyD3PDAna
+  - Inherits from SusyD3PDInterface
+  - Holds all the functionality for doing the analysis out of d3pds.
+    Object selection, event cleaning, reweighting, etc.
+
+SusyNt
+  - Definitions for the SusyNt classes: particles, jets, event variables, etc.
+
+SusyNtObject
+  - Manages SusyNt read/write of branches
+
+SusyNtMaker
+  - Inherits from SusyD3PDAna
+  - Applies cleaning cuts and event filtering
+  - Writes a SusyNt tree
+
+SusyNtAna
+  - TSelector which will run on SusyNt
+  - Holds functionality to do final object selections
+        
+
+# Executables
+SusyD3PDTest
+  - Just dumps D3PD variables, for testing
+
+NtMaker
+  - Runs the SusyNtMaker
+
+SusyNtTest
+  - Example executable for processing SusyNt
+
+
+
+
+#------------------------------------------------------------------------------------
 # More stuff to come!
-
+#------------------------------------------------------------------------------------
 
 # TODO
 - Add script or package list for checking out all RootCore packages
         - Could easily set it up to checkout just the MultiLep common code and use the install script
-
-
-
-
 
