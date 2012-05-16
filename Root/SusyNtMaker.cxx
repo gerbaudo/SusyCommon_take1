@@ -234,6 +234,8 @@ void SusyNtMaker::fillEventVars()
   evt->mcChannel        = m_isMC? d3pd.truth.channel_number() : 0;
   evt->w                = m_isMC? d3pd.truth.event_weight()   : 1;
 
+  evt->avgMu            = d3pd.evt.averageIntPerXing();
+
   evt->wPileup          = m_isMC? getPileupWeight() : 1;
   evt->xsec             = m_isMC? getXsecWeight() : 1;
   evt->lumiSF           = m_isMC? getLumiWeight() : 1;             

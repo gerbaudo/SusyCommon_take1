@@ -203,6 +203,8 @@ namespace Susy
       uint lb;                  // lumi block number
       DataStream stream;        // DataStream enum, defined in SusyDefs.h
 
+      // Do we need to store the actualIntPerXing?
+      float avgMu;              // average interactions per bunch crossing
       uint nVtx;                // number of good vertices
 
       bool isMC;                // is MC flag
@@ -222,14 +224,14 @@ namespace Susy
 
       // clear vars
       void clear(){
-        run = event = lb = nVtx = 0;
+        run = event = lb = avgMu = nVtx = 0;
         stream = Stream_Unknown;
         isMC = false;
         mcChannel = w = 0;
         wPileup = xsec = lumiSF = 1;
       }
 
-      ClassDef(Event, 4);
+      ClassDef(Event, 5);
   };
 
 };

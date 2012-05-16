@@ -12,6 +12,7 @@
 	* Updated common code function usage for latest version
 	* Added e-mu trigger matching
 	* Changed signal jet pt to 20 GeV (3L convention only)
+	* Added avgMu = avergeIntPerXing to the Event
 
 2012-04-27 Steve
 	* Fixed muon trigger matching.  It wasn't saving the flags
