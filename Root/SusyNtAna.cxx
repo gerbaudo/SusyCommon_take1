@@ -13,6 +13,7 @@ SusyNtAna::SusyNtAna() :
         m_entry(0),
         m_dbg(0)
 {
+  m_triggerNames = getTrigChains();
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -161,6 +162,7 @@ bool SusyNtAna::isSignalElectron(const Electron* ele)
   // hardcode values for now, make it better later
   if(!ele->tightPP) return false;
   if(ele->ptcone20/ele->Pt() > 0.1) return false;
+  if(fabs(ele->d0)/ele->errD0 > 6) return false;
   return true;
 }
 /*--------------------------------------------------------------------------------*/
@@ -168,6 +170,7 @@ bool SusyNtAna::isSignalMuon(const Muon* mu)
 {
   // hardcode values for now, make it better later
   if(mu->ptcone20 > 1.8) return false;
+  if(fabs(mu->d0)/mu->errD0 > 3) return false;
   return true;
 }
 /*--------------------------------------------------------------------------------*/
@@ -187,7 +190,7 @@ void SusyNtAna::selectJets()
 /*--------------------------------------------------------------------------------*/
 bool SusyNtAna::isSignalJet(const Jet* jet)
 {
-  if(jet->Pt() < 30) return false;
+  if(jet->Pt() < 20) return false;
   if(jet->Eta() > 2.5) return false;
   if(jet->jvf < 0.75) return false;
   return true;
@@ -213,75 +216,108 @@ uint SusyNtAna::getMuoTrigger()
 /*--------------------------------------------------------------------------------*/
 uint SusyNtAna::get2EleTrigger()
 {
-  return 0;
-  //uint run = nt.evt()->run;
-  //if(run < 186873) return TRIG_2e12_medium;
-  //else if(run < 188902) return TRIG_2e12T_medium;
-  //else return TRIG_2e12Tvh_medium1;
+  uint run = nt.evt()->run;
+  if(run < 186873) return TRIG_2e12_medium;
+  else if(run < 188902) return TRIG_2e12T_medium;
+  else return TRIG_2e12Tvh_medium;
 }
 /*--------------------------------------------------------------------------------*/
 uint SusyNtAna::get2MuoTrigger()
-{
-  return 0;
-  //return TRIG_2mu10_loose;
-}
+{ return TRIG_2mu10_loose; }
+/*--------------------------------------------------------------------------------*/
+uint SusyNtAna::getEMuTrigger()
+{ return TRIG_e10_medium_mu6; }
 
 /*--------------------------------------------------------------------------------*/
 // Trigger reweight maps
 /*--------------------------------------------------------------------------------*/
-void SusyNtAna::loadTriggerMaps()
+/*void SusyNtAna::loadTriggerMaps()
 {
   TFile* eleTrigFile = new TFile("$ROOTCOREDIR/data/DGTriggerReweight/electron_maps.root");
   TFile* muoTrigFile = new TFile("$ROOTCOREDIR/data/DGTriggerReweight/muon_triggermaps.root");
 
-  // TODO: dilepton triggers
-  m_elTrigWeightMap[TRIG_e20_medium]     = loadTrigWeighter(eleTrigFile, "e20_medium");
-  m_elTrigWeightMap[TRIG_e22_medium]     = loadTrigWeighter(eleTrigFile, "e22_medium");
-  m_elTrigWeightMap[TRIG_e22vh_medium1]  = loadTrigWeighter(eleTrigFile, "e22vh_medium1");
+  m_trigTool_mu18               = loadTrigWeighter(muoTrigFile, "mu18");
+  m_trigTool_mu18Med            = loadTrigWeighter(muoTrigFile, "mu18_medium");
+  m_trigTool_mu10L_not18        = loadTrigWeighter(muoTrigFile, "notmu18_mu10_loose");
+  m_trigTool_mu10L_not18Med     = loadTrigWeighter(muoTrigFile, "notmu18_medium_mu10_loose");
+  m_trigTool_mu6_not18          = loadTrigWeighter(muoTrigFile, "notmu18_mu6");
+  m_trigTool_mu6_not18Med       = loadTrigWeighter(muoTrigFile, "notmu18_medium_mu6");
+
+  m_trigTool_e20                = loadTrigWeighter(eleTrigFile, "e20_medium");
+  m_trigTool_e22                = loadTrigWeighter(eleTrigFile, "e22_medium");
+  m_trigTool_e22vh              = loadTrigWeighter(eleTrigFile, "e22vh_medium");
+  m_trigTool_e12                = loadTrigWeighter(eleTrigFile, "e12_medium");
+  m_trigTool_e12T               = loadTrigWeighter(eleTrigFile, "e12T_medium");
+  m_trigTool_e12Tvh             = loadTrigWeighter(eleTrigFile, "e12Tvh_medium");
+  m_trigTool_e10                = loadTrigWeighter(eleTrigFile, "e10_medium");
+
+  //m_elTrigWeightMap[TRIG_e20_medium]     = loadTrigWeighter(eleTrigFile, "e20_medium");
+  //m_elTrigWeightMap[TRIG_e22_medium]     = loadTrigWeighter(eleTrigFile, "e22_medium");
+  //m_elTrigWeightMap[TRIG_e22vh_medium1]  = loadTrigWeighter(eleTrigFile, "e22vh_medium1");
   //m_elTrigWeightMap[TRIG_2e12_medium]    = loadTrigWeighter(eleTrigFile, "e12_medium");
   //m_elTrigWeightMap[TRIG_2e12T_medium]   = loadTrigWeighter(eleTrigFile, "e12T_medium");
   //m_elTrigWeightMap[TRIG_2e12Tvh_medium] = loadTrigWeighter(eleTrigFile, "e12Tvh_medium");
 
-  m_muTrigWeightMap[TRIG_mu18]           = loadTrigWeighter(muoTrigFile, "mu18");
-  m_muTrigWeightMap[TRIG_mu18_medium]    = loadTrigWeighter(muoTrigFile, "mu18_medium");
-}
+  //m_muTrigWeightMap[TRIG_mu18]           = loadTrigWeighter(muoTrigFile, "mu18");
+  //m_muTrigWeightMap[TRIG_mu18_medium]    = loadTrigWeighter(muoTrigFile, "mu18_medium");
+  //m_muTrigWeightMap[TRIG_2mu10_loose]    = loadTrigWeighter(muoTrigFile, "mu10_loose");
+}*/
 /*--------------------------------------------------------------------------------*/
-APReweightND* SusyNtAna::loadTrigWeighter(TFile* f, TString chain)
+/*APReweightND* SusyNtAna::loadTrigWeighter(TFile* f, TString name)
 {
-  TString numName = "ths_"+chain+"_num";
-  TString denName = "ths_"+chain+"_den";
+  TString numName = "ths_"+name+"_num";
+  TString denName = "ths_"+name+"_den";
   // muon file currently contains a typo
-  if (chain.Contains("mu")) numName = "ths_"+chain+"_nom";
+  if (name.Contains("mu")) numName = "ths_"+name+"_nom";
 
   // Does this memory get cleaned up when the file closes?
   THnSparseD* num = (THnSparseD*) f->Get( numName );
   THnSparseD* den = (THnSparseD*) f->Get( denName );
   if(!num || !den){
-    cout << "ERROR loading trig maps for chain " << chain << endl;
+    cout << "ERROR loading trig maps for chain " << name << endl;
     abort();
   }
   return new APReweightND( den, num, true );
-}
+}*/
 /*--------------------------------------------------------------------------------*/
-APReweightND* SusyNtAna::getEleTrigWeighter(uint trigFlag)
+/*APReweightND* SusyNtAna::getEleTrigWeighter(uint trigFlag)
 {
-  map<int, APReweightND*>::iterator itr = m_elTrigWeightMap.find(trigFlag);
-  if(itr==m_elTrigWeightMap.end()){
-    cout << "ERROR - Electron trigger reweighter " << trigFlag << " doesn't exist" << endl;
+  // New approach, just use if/else statements
+  if     (trigFlag==TRIG_e20_medium)     return m_trigTool_e20;
+  else if(trigFlag==TRIG_e22_medium)     return m_trigTool_e22;
+  else if(trigFlag==TRIG_e22vh_medium1)  return m_trigTool_e22vh;
+  else if(trigFlag==TRIG_2e12_medium)    return m_trigTool_e12;
+  else if(trigFlag==TRIG_2e12T_medium)   return m_trigTool_e12T;
+  else if(trigFlag==TRIG_2e12Tvh_medium) return m_trigTool_e12Tvh;
+  else if(trigFlag==TRIG_e10_medium_mu6) return m_trigTool_e10;
+  else{
+    cout << "ERROR - Electron trigger reweighter for " << m_triggerNames[trigFlag] << " doesn't exist!" << endl;
     return 0;
   }
-  return itr->second;
-}
+}*/
 /*--------------------------------------------------------------------------------*/
-APReweightND* SusyNtAna::getMuoTrigWeighter(uint trigFlag)
+/*APReweightND* SusyNtAna::getMuoTrigWeighter(uint trigFlag)
 {
-  map<int, APReweightND*>::iterator itr = m_muTrigWeightMap.find(trigFlag);
-  if(itr==m_muTrigWeightMap.end()){
-    cout << "ERROR - Muon trigger reweighter " << trigFlag << " doesn't exist" << endl;
+  uint run = nt.evt()->run;
+  // New approach, just use if/else statements
+  // Muon conditional efficiencies are period dependent
+  if     (trigFlag==TRIG_mu18)           return m_trigTool_mu18;
+  else if(trigFlag==TRIG_mu18_medium)    return m_trigTool_mu18Med;
+  else if(trigFlag==TRIG_2mu10_loose){
+    if(run<186516)                       return m_trigTool_mu10L_not18;
+    else                                 return m_trigTool_mu10L_not18Med;
+  }
+  else if(trigFlag==TRIG_e10_medium_mu6){
+    // No e-mu trig before period I
+    if(run<185353)                       return 0;
+    else if(run<186516)                  return m_trigTool_mu6_not18;
+    else                                 return m_trigTool_mu6_not18Med;
+  }
+  else{
+    cout << "ERROR - Muon trigger reweighter for " << m_triggerNames[trigFlag] << " doesn't exist!" << endl;
     return 0;
   }
-  return itr->second;
-}
+}*/
 
 /*--------------------------------------------------------------------------------*/
 // Event and object dumps

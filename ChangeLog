@@ -1,5 +1,23 @@
 # vim: set noexpandtab:
 
+2012-05-15 Steve
+	* Finally we have SVNGRP back!
+	* Updating all of my changes while svn was down
+	* Added enums for data period and mc period
+	* Added Meff helper function
+	* Added function to help find best Z candidate pair
+	* Added d0 cuts to signal lepton definitions
+	* Added cluster energy to the electrons
+	* Added jet truth label
+	* Updated common code function usage for latest version
+	* Added e-mu trigger matching
+	* Changed signal jet pt to 20 GeV (3L convention only)
+
+2012-04-27 Steve
+	* Fixed muon trigger matching.  It wasn't saving the flags
+	* Moved ele and mu trigger enums into one enum
+	* This change was never committed, so it is picked up with the repository update above
+
 2012-04-24 Steve
 	* Added TrackD3PDObject for reading track variables from d3pd
 	* Added d0 and error for electrons

@@ -97,6 +97,7 @@ namespace Susy
       Electron(){ clear(); }
       virtual ~Electron(){};
 
+      float clusE;              // CaloCluster energy
       float clusEta;            // CaloCluster eta
       bool mediumPP;            // isEM medium++
       bool tightPP;             // isEM tight++
@@ -110,11 +111,11 @@ namespace Susy
 
       // clear vars
       void clear(){
-        clusEta = mediumPP = tightPP = 0;
+        clusE = clusEta = mediumPP = tightPP = 0;
         Lepton::clear();
       }
 
-      ClassDef(Electron, 1);
+      ClassDef(Electron, 2);
   };
 
   // Muon class
@@ -124,7 +125,7 @@ namespace Susy
       Muon(){ clear(); }
       virtual ~Muon(){};
 
-      bool isCombined;          // Is combined muon
+      bool isCombined;          // Is combined muon, otherwise segment tagged
 
       // polymorphism, baby!!
       bool isEle() const { return false; }
@@ -151,17 +152,18 @@ namespace Susy
 
       float jvf;                // Jet vertex fraction
       float combNN;             // JetFitterCombNN b-tag weight
+      int truthLabel;           // Flavor truth label
 
       // print method
       void print() const;
 
       // clear vars
       void clear(){
-        jvf = combNN = 0;
+        jvf = combNN = truthLabel = 0;
         Particle::clear();
       }
 
-      ClassDef(Jet, 1);
+      ClassDef(Jet, 2);
   };
 
   // Met class

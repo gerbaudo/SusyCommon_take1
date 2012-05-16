@@ -50,7 +50,7 @@ void SusyD3PDAna::Begin(TTree* /*tree*/)
   cout << "DataStream: " << streamName(m_stream) << endl;
 
   // Setup SUSYTools
-  m_susyObj.initialize();
+  m_susyObj.initialize(!m_isMC);
   m_fakeMetEst.initialize("$ROOTCOREDIR/data/MultiLep/fest_periodF_v1.root");
 
   // SUSY cross sections
@@ -126,11 +126,14 @@ void SusyD3PDAna::selectBaselineObjects()
 {
   if(m_dbg) cout << "selectBaselineObjects" << endl;
   vector<int> goodJets;  // What the hell is this??
+  //float mu = d3pd.evt.averageIntPerXing();
 
   // Preselection - no systematics yet
-  m_preElectrons = get_electrons_baseline( &d3pd.ele, !m_isMC, d3pd.evt.RunNumber(), m_susyObj, 10.*GeV, 2.47, 0, 0, false );
+  m_preElectrons = get_electrons_baseline( &d3pd.ele, !m_isMC, d3pd.evt.RunNumber(), 
+                                           m_susyObj, 10.*GeV, 2.47, 0, 0, false );
   m_preMuons     = get_muons_baseline( &d3pd.muo, !m_isMC, m_susyObj, 10.*GeV, 2.4, "" );
-  m_preJets      = get_jet_baseline( &d3pd.jet, !m_isMC, m_susyObj, 20.*GeV, 4.9, JetErr::NONE, false, goodJets );
+  m_preJets      = get_jet_baseline( &d3pd.jet, &d3pd.vtx, &d3pd.evt, !m_isMC, m_susyObj, 
+                                     20.*GeV, 4.9, JetErr::NONE, false, goodJets );
   
   // e-e overlap removal
   m_baseElectrons = overlap_removal(m_susyObj, &d3pd.ele, m_preElectrons, &d3pd.ele, m_preElectrons, 0.1, 1);
@@ -164,8 +167,10 @@ void SusyD3PDAna::selectSignalObjects()
 {
   if(m_dbg) cout << "selectSignalObjects" << endl;
   // TODO: make these functions more symmetric
-  m_sigElectrons = get_electrons_signal(&d3pd.ele, m_baseElectrons, m_susyObj, 10.*GeV);
-  m_sigMuons     = get_muons_signal(&d3pd.muo, m_susyObj, m_baseMuons, 10.*GeV, 1.8*GeV);
+  //m_sigElectrons = get_electrons_signal(&d3pd.ele, m_baseElectrons, m_susyObj, 10.*GeV);
+  m_sigElectrons = get_electrons_signal(&d3pd.ele, m_baseElectrons, m_susyObj, 10.*GeV,
+                                        false, 6., &d3pd.trk);
+  m_sigMuons     = get_muons_signal(&d3pd.muo, m_susyObj, m_baseMuons, 10.*GeV, 1.8*GeV, false, 3.);
   m_sigJets      = get_jet_signal(&d3pd.jet, m_susyObj, m_baseJets, 20.*GeV, 2.5, 0.75);
 
   // combine leptons
@@ -237,7 +242,7 @@ void SusyD3PDAna::matchElectronTriggers()
         flags |= TRIG_e22vh_medium1;
       }
     }
-    if(lv->Pt() > 15.*GeV){
+    if(lv->Pt() > 17.*GeV){
       // 2e12_medium
       if( m_isMC || (run<186873 && matchElectronTrigger(lv, d3pd.trig.trig_EF_el_EF_2e12_medium())) ){
         flags |= TRIG_2e12_medium;
@@ -251,13 +256,18 @@ void SusyD3PDAna::matchElectronTriggers()
         flags |= TRIG_2e12Tvh_medium;
       }
     }
+    if(lv->Pt() > 15.*GeV){
+      // e10_medium_mu6
+      if( m_isMC || (run>185353 && matchElectronTrigger(lv, d3pd.trig.trig_EF_el_EF_e10_medium_mu6())) ){
+        flags |= TRIG_e10_medium_mu6;
+      }
+    }
 
     // assign the flags in the map
     m_eleTrigFlags[iEl] = flags;
   }
 }
 /*--------------------------------------------------------------------------------*/
-//bool SusyD3PDAna::matchElectronTrigger(float eta, float phi, vector<int>* trigBools)
 bool SusyD3PDAna::matchElectronTrigger(const TLorentzVector* lv, vector<int>* trigBools)
 {
   // matched trigger index - not used
@@ -286,40 +296,30 @@ void SusyD3PDAna::matchMuonTriggers()
 
     if(lv->Pt() > 20.*GeV){
       // mu18
-      if(m_isMC || (run<186516 && matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18()))) {
+      if( m_isMC || (run<186516 && matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18()))) {
         flags |= TRIG_mu18;
       }
       // mu18_medium
-      if(m_isMC || (run>=186516 && matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18_medium()))) {
+      if( m_isMC || (run>=186516 && matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu18_medium()))) {
         flags |= TRIG_mu18_medium;
       }
     }
     if(lv->Pt() > 10.*GeV){
       // 2mu10_loose
-      if(m_isMC || matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_2mu10_loose())) {
+      if( m_isMC || matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_2mu10_loose())) {
         flags |= TRIG_2mu10_loose;
       }
     }
+    if(lv->Pt() > 8.*GeV){
+      // e10_medium_mu6
+      if( m_isMC || matchMuonTrigger(lv, d3pd.trig.trig_EF_trigmuonef_EF_mu6()) ) {
+        flags |= TRIG_e10_medium_mu6;
+      }
+    }
+
+    // assign the flags for this muon
+    m_muoTrigFlags[iMu] = flags;
   }
-
-  // This seems very complicated, and 2L seems to match muons differently than 3L.
-  // For now, just use the common code 3L matching function.
-  // TODO: come back to this and try to improve it.
-
-  // Get trigger plateau muons - but use baseline muons instead of signal muons
-  //vector<int> plateau_muons = get_muons_signal_triggerplateau(&d3pd.muo, m_baseMuons, m_susyObj, 20.*GeV);
-  // Get muons which matched to trigger
-  //vector<int> matched_muons = get_muons_triggered(&d3pd.muo, plateau_muons, &d3pd.trig, 0.15);
-
-  // Now assign the flags
-  // I guess I'll just flag them all until I have a different prescription
-  /*
-  for(uint i=0; i < matched_muons.size(); i++){
-    uint flags = 0;
-    flags |= TRIG_mu18;
-    flags |= TRIG_mu18_medium;
-    m_muoTrigFlags[ matched_muons[i] ] = flags;
-  }*/
 }
 /*--------------------------------------------------------------------------------*/
 bool SusyD3PDAna::matchMuonTrigger(const TLorentzVector* lv, vector<int>* passTrig)
@@ -361,8 +361,10 @@ bool SusyD3PDAna::passLarHoleVeto()
 {
   TVector2 metVector = m_met.Vect().XYvector();
   vector<int> goodJets;
+  //float mu = d3pd.evt.averageIntPerXing();
   // Do I still need these jets with no eta cut?
-  vector<int> jets = get_jet_baseline( &d3pd.jet, !m_isMC, m_susyObj, 20.*GeV, 9999999, JetErr::NONE, false, goodJets );
+  vector<int> jets = get_jet_baseline( &d3pd.jet, &d3pd.vtx, &d3pd.evt, !m_isMC, m_susyObj, 20.*GeV, 
+                                       9999999, JetErr::NONE, false, goodJets );
   return !check_jet_larhole(&d3pd.jet, jets, !m_isMC, m_susyObj, 180614, metVector, &m_fakeMetEst);
 }
 /*--------------------------------------------------------------------------------*/

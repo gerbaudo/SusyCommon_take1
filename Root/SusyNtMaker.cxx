@@ -70,6 +70,52 @@ Bool_t SusyNtMaker::Process(Long64_t entry)
 
   if(selectEvent()){
     fillNtVars();
+
+    // TESTING
+    /*
+    //if(d3pd.evt.RunNumber() == 189751 && d3pd.evt.EventNumber() == 42719)
+    //if(d3pd.evt.RunNumber() == 183003 && d3pd.evt.EventNumber() == 18926)
+    if(true)
+    {
+      cout << "FUCKING FOUND YOU" << endl;
+  
+      // Dump the baseline leptons
+      cout << "Electrons" << endl;
+      for(uint iEl=0; iEl < m_susyNt.ele()->size(); iEl++){
+        const Susy::Electron* ele = & m_susyNt.ele()->at(iEl);
+        cout << " " << iEl << " ";
+        ele->print();
+      }
+      cout << "Muons" << endl;
+      for(uint iMu=0; iMu < m_susyNt.muo()->size(); iMu++){
+        const Susy::Muon* muo = & m_susyNt.muo()->at(iMu);
+        cout << " " << iMu << " ";
+        muo->print();
+      }
+  
+      // dump all the truth particles
+      cout << "Truth particles" << endl;
+      cout << setw(10) << "barcode" << setw(7) << "status" << setw(7) << "pdg" << setw(7) << "pt";
+      cout << "    mothers";
+      cout << endl;
+      cout.precision(2);
+      uint nTruth = d3pd.truth.n();
+      for(uint i=0; i < nTruth; i++){
+        cout << setw(10) << d3pd.truth.barcode()->at(i);
+        cout << setw(7) << d3pd.truth.status()->at(i);
+        cout << setw(7) << d3pd.truth.pdgId()->at(i);
+        cout << fixed << setw(7) << d3pd.truth.pt()->at(i)/GeV;
+        //if(d3pd.truth.parents()->at(i).size()) cout << setw(10) << d3pd.truth.parents()->at(i)[0];
+        cout << "    ";
+        uint nMo = d3pd.truth.parents()->at(i).size();
+        for(uint iMo=0; iMo < nMo; iMo++){
+          cout << d3pd.truth.parents()->at(i)[iMo] << ",";
+        }
+      
+        cout << endl;
+      }
+    }
+    */
   }
 
   return kTRUE;
@@ -220,6 +266,7 @@ void SusyNtMaker::fillElectronVars(const LeptonInfo* lepIn)
   eleOut->q             = element->charge();
   eleOut->mcType        = m_isMC? element->type() : 0;
   eleOut->mcOrigin      = m_isMC? element->origin() : 0;
+  eleOut->clusE         = element->cl_E();
   eleOut->clusEta       = element->cl_eta();
   eleOut->mediumPP      = element->mediumPP();
   eleOut->tightPP       = element->tightPP();
@@ -285,6 +332,7 @@ void SusyNtMaker::fillJetVars()
 
     jetOut->jvf         = element->jvtxf();
     jetOut->combNN      = element->flavor_weight_JetFitterCOMBNN();
+    jetOut->truthLabel  = m_isMC? element->flavor_truth_label() : 0;
   }
 }
 /*--------------------------------------------------------------------------------*/

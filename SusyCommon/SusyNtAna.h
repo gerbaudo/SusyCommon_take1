@@ -72,12 +72,13 @@ class SusyNtAna : public TSelector
     uint getMuoTrigger();
     uint get2EleTrigger();
     uint get2MuoTrigger();
+    uint getEMuTrigger();
 
     // Trigger reweighting
-    void loadTriggerMaps();
-    APReweightND* loadTrigWeighter(TFile* f, TString chain);
-    APReweightND* getEleTrigWeighter(uint trigFlag);
-    APReweightND* getMuoTrigWeighter(uint trigFlag);
+    //void loadTriggerMaps();
+    //APReweightND* loadTrigWeighter(TFile* f, TString chain);
+    //APReweightND* getEleTrigWeighter(uint trigFlag);
+    //APReweightND* getMuoTrigWeighter(uint trigFlag);
 
     // Event and object dumps
     void dumpEvent();
@@ -123,8 +124,31 @@ class SusyNtAna : public TSelector
     // Triger reweighting
     //
 
-    std::map<int, APReweightND*>        m_elTrigWeightMap;
-    std::map<int, APReweightND*>        m_muTrigWeightMap;
+    stringvector        m_triggerNames;         // trigger chain names, indexed by trigger enum
+
+    // I first thought I could use a map of chain enum -> reweighter.
+    // It's clear now that it won't work because a chain may need 
+    // more than one map depending on the period.  That's because
+    // other chains may change so the conditional efficiencies change.
+    //std::map<int, APReweightND*>        m_elTrigWeightMap;
+    //std::map<int, APReweightND*>        m_muTrigWeightMap;
+
+    // Instead, have one pointer for each reweighter.
+    //APReweightND*       m_trigTool_mu18;
+    //APReweightND*       m_trigTool_mu18Med;
+    //APReweightND*       m_trigTool_mu10L_not18;
+    //APReweightND*       m_trigTool_mu10L_not18Med;
+    //APReweightND*       m_trigTool_mu6_not18;
+    //APReweightND*       m_trigTool_mu6_not18Med;
+
+    //APReweightND*       m_trigTool_e20;
+    //APReweightND*       m_trigTool_e22;
+    //APReweightND*       m_trigTool_e22vh;
+    //APReweightND*       m_trigTool_e12;
+    //APReweightND*       m_trigTool_e12T;
+    //APReweightND*       m_trigTool_e12Tvh;
+    //APReweightND*       m_trigTool_e10;
+
 };
 
 
