@@ -63,6 +63,32 @@ enum DataStream
   Stream_N
 };
 
+enum DataPeriod
+{
+  Period_B = 0,
+  Period_D,
+  Period_E,
+  Period_F,
+  Period_G,
+  Period_H,
+  Period_I,
+  Period_J,
+  Period_K,
+  Period_L,
+  Period_M,
+  Period_Num
+};
+
+// MC periods have less granularity than data
+enum McPeriod
+{
+  McPeriod_BD = 0,
+  McPeriod_EH,
+  McPeriod_IK,
+  McPeriod_LM,
+  McPeriod_Num
+};
+
 //-----------------------------------------------------------------------------------
 // LepInfo - a simple, transient class for interacting with leptons in SusyNt
 // Not yet sure if I'm going to use this class
@@ -84,6 +110,8 @@ class LepInfo
 // Global functions
 //-----------------------------------------------------------------------------------
 std::string streamName(DataStream);
+DataPeriod getDataPeriod(uint run);
+McPeriod getMcPeriod(uint run);
 
 bool isSameFlav(const Susy::Lepton* l1, const Susy::Lepton* l2);
 bool isSFOS(const Susy::Lepton* l1, const Susy::Lepton* l2);
@@ -93,9 +121,11 @@ bool hasSFOS(const LeptonVector& leps);
 float Mll(const Susy::Lepton* l1, const Susy::Lepton* l2);
 float Mlll(const Susy::Lepton* l1, const Susy::Lepton* l2, const Susy::Lepton* l3);
 float Mt(const Susy::Lepton* lep, const Susy::Met* met);
+float Meff(const LeptonVector& leps, const JetVector& jets, const Susy::Met* met);
 
 bool isZ(const Susy::Lepton* l1, const Susy::Lepton* l2, float massWindow=10.);
 bool hasZ(const LeptonVector& leps, float massWindow=10.);
+void bestZ(uint& l1, uint& l2, const LeptonVector& leps);
 
 bool hasBJet(const JetVector& jets, float weight=1.8);
 
@@ -110,7 +140,24 @@ bool findLepton(const Susy::Lepton* lep, const LeptonVector& leptons);
 //-----------------------------------------------------------------------------------
 
 // Trigger enums - try to respect backwards compatibility by adding to the end
-enum ElecTrigBit
+// NOTE: CURRENT APPROACH CAN ONLY STORE 32 CHAINS!!!
+enum TrigBit
+{
+  BIT_e20_medium = 0,
+  BIT_e22_medium,
+  BIT_e22vh_medium1,
+  BIT_2e12_medium,
+  BIT_2e12T_medium,
+  BIT_2e12Tvh_medium,
+  BIT_mu18,
+  BIT_mu18_medium,
+  BIT_2mu10_loose,
+  BIT_e10_medium_mu6,
+  N_TRIG
+};
+
+// Trigger enums have been combined into one, above
+/*enum ElecTrigBit
 {
   BIT_e10_medium = 0,
   BIT_e12_medium,
@@ -130,7 +177,7 @@ enum MuonTrigBit
   BIT_mu18_medium,
   BIT_2mu10_loose,
   N_MU_TRIG
-};
+};*/
 
 // Trigger bit masks - can represent multiple chains at once
 // electron
@@ -144,11 +191,37 @@ const uint TRIG_2e12Tvh_medium  = 1<<BIT_2e12Tvh_medium;
 const uint TRIG_mu18            = 1<<BIT_mu18;
 const uint TRIG_mu18_medium     = 1<<BIT_mu18_medium;
 const uint TRIG_2mu10_loose     = 1<<BIT_2mu10_loose;
+// e-mu
+const uint TRIG_e10_medium_mu6  = 1<<BIT_e10_medium_mu6;
 
 // Trigger chain names, for convenience
+stringvector getTrigChains();
 stringvector getEleTrigChains();
 stringvector getMuTrigChains();
 
+
+
+/*
+             ,                           ,
+            `\`\                       /'/'
+              `\`\                   /'/'
+                `\`\ ............. /'/'
+           ..,;;;;`\`\'''''''''''/'/';;;,..                     
+        .:''        `\`\_     _/'/'       ``;.                   
+        :::.          `(_)   (_)'         ,;;:                   
+        n:.``;;;,....            ....,;;;'',::  
+        :\ ``;;;;. ````::::::::'''''.n;;;''  :                   
+        : \      ```::n::::::::::'''/ \      :                
+        :  \  If a man does not keep pace    :                   
+        :   \with his companions, perhaps    :                   
+        :    \ it is because he hears a  \   :                   
+        :     \   different drummer.      \ /;                   
+        ::.    \-/Henry David Thoreau      v;:
+        `:.``:::v....       \ /   ....;;;''.;' 
+           ``:::... ```::::::v:''' ...;;;''  
+                  ````::::::::::''''                           
+
+*/
 
 
 
