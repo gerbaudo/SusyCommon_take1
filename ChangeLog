@@ -5,6 +5,7 @@
 	* Added wA_sl susy grids to the submission area
 	* Added optional overrides of mc cross section and lumi to the NtMaker
 	* Added function for computing the btag scale factor, although it is not finished
+	* Tagging SusyCommon-00-00-04
 
 2012-05-15 Steve
 	* Finally we have SVNGRP back!
