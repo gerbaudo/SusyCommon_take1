@@ -80,6 +80,9 @@ class SusyNtAna : public TSelector
     //APReweightND* getEleTrigWeighter(uint trigFlag);
     //APReweightND* getMuoTrigWeighter(uint trigFlag);
 
+    // BTag scale factor
+    float getBTagSF(const JetVector& jets);
+
     // Event and object dumps
     void dumpEvent();
     void dumpBaselineObjects();
@@ -134,6 +137,7 @@ class SusyNtAna : public TSelector
     //std::map<int, APReweightND*>        m_muTrigWeightMap;
 
     // Instead, have one pointer for each reweighter.
+    // This has been moved to the TriggerLogic class
     //APReweightND*       m_trigTool_mu18;
     //APReweightND*       m_trigTool_mu18Med;
     //APReweightND*       m_trigTool_mu10L_not18;
@@ -148,6 +152,12 @@ class SusyNtAna : public TSelector
     //APReweightND*       m_trigTool_e12T;
     //APReweightND*       m_trigTool_e12Tvh;
     //APReweightND*       m_trigTool_e10;
+
+    
+    // btag SF reweighting
+    std::string         m_btagEnvFile;
+    std::string         m_btagDir;
+
 
 };
 

@@ -1,5 +1,11 @@
 # vim: set noexpandtab:
 
+2012-05-23 Steve
+	* Added pythiaB, V+gamma, and sherpa diboson samples
+	* Added wA_sl susy grids to the submission area
+	* Added optional overrides of mc cross section and lumi to the NtMaker
+	* Added function for computing the btag scale factor, although it is not finished
+
 2012-05-15 Steve
 	* Finally we have SVNGRP back!
 	* Updating all of my changes while svn was down

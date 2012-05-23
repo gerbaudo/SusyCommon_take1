@@ -1,4 +1,5 @@
 #include <iomanip>
+#include "TSystem.h"
 #include "TFile.h"
 #include "SusyCommon/SusyNtAna.h"
 
@@ -34,6 +35,10 @@ void SusyNtAna::Init(TTree* tree)
 void SusyNtAna::Begin(TTree* /*tree*/)
 {
   if(m_dbg) cout << "SusyNtAna::Begin" << endl;
+
+  // btag SF files
+  m_btagEnvFile = gSystem->ExpandPathName("$ROOTCOREDIR/data/SUSYTools/BTagCalibration.env");
+  m_btagDir     = gSystem->ExpandPathName("$ROOTCOREDIR/data/SUSYTools/");
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -318,6 +323,18 @@ uint SusyNtAna::getEMuTrigger()
     return 0;
   }
 }*/
+
+/*--------------------------------------------------------------------------------*/
+// Get B-Tag scale factor
+/*--------------------------------------------------------------------------------*/
+float SusyNtAna::getBTagSF(const JetVector& jets)
+{
+  vector<float> jet_pts;
+  vector<float> jet_etas;
+  vector<float> jet_btags;
+  vector<float> jet_pdgs;
+  return 1;
+}
 
 /*--------------------------------------------------------------------------------*/
 // Event and object dumps

@@ -14,6 +14,7 @@ SusyD3PDAna::SusyD3PDAna() :
         m_sample(""),
         m_lumi(4700),
         m_sumw(1),
+        m_xsec(-1),
         m_pileup(0),
         m_susyXsec(0)
 {
@@ -401,6 +402,10 @@ bool SusyD3PDAna::passCosmic()
 /*--------------------------------------------------------------------------------*/
 float SusyD3PDAna::getXsecWeight()
 {
+  // Use user cross section if it has been set
+  if(m_xsec > 0) return m_xsec;
+
+  // Use SUSY cross section file
   int id = d3pd.truth.channel_number();
   if(m_xsecMap.find(id) == m_xsecMap.end()) {
     m_xsecMap[id] = m_susyXsec->process(id);

@@ -1,29 +1,17 @@
 #!/bin/bash
 
-iteration="i9"
+iteration="i15"
 #iteration="test4"
 
-# SUSY D3PD grid datasets
-datasets=(
-        "group10.phys-susy.data11_7TeV.periodB.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodB.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodD.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodD.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodE.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodE.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodF.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodF.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodG.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodG.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodH.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodH.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodI.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodI.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodJ.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodJ.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodK.physics_Egamma.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-        "group10.phys-susy.data11_7TeV.periodK.physics_Muons.PhysCont.NTUP_SUSYSKIM.pro10_v01_p832/"
-)
+# get the samples of interest
+if [[ $# = 0 ]]; then
+        echo "submit all samples"
+        pattern="data"
+else
+        pattern=$1
+fi
+datasets=(`cat dataSamples.txt | grep $pattern`)
+echo "${#datasets[@]} datasets"
 
 
 # Setup Panda before running this script
@@ -49,11 +37,10 @@ for inDS in ${datasets[@]}; do
         echo "sample  $sample"
 	
 	# prun command
-	prun --exec "$command" --useRootCore --tmpDir /tmp \
-             --excludedSite=MANC,QMUL,MWT2,ECDF,WEIZMANN,RHUL,OX,SARA,SHEF,PIC \
-             --nGBPerJob=MAX \
+	prun --exec "$command" --useRootCore --tmpDir /tmp --inTarBall=area.tar \
+             --excludedSite=OX,SARA,SHEF,PIC,FZK,LPSC,ARC,GLASGOW,GRIF-LAL \
              --extFile '*.so,*.root' --match "*root*" --outputs "susyNt.root" \
-             --inTarBall=area.tar \
+             --nGBPerJob=MAX \
              --athenaTag=17.0.5.5 \
 	     --inDS  $inDS \
 	     --outDS $outDS

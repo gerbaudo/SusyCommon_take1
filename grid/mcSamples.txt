@@ -79,7 +79,7 @@ WZ		mc11_7TeV.105987.WZ_Herwig.merge.NTUP_SUSY.e825_s1310_s1300_r3043_r2993_p832
 WZ_3L		mc11_7TeV.142604.WZ_Herwig_3leptFilt.merge.NTUP_SUSY.e971_s1310_s1300_r3043_r2993_p832/		49999
 WWjj		mc11_7TeV.119357.PythiaMadgraph_WWjj.merge.NTUP_SUSY.e887_s1372_s1370_r3043_r2993_p832/		94998
 
-ttbar		mc11_7TeV.105200.T1_McAtNlo_Jimmy.merge.NTUP_SUSY.e835_s1272_s1274_r3043_r2993_p832/		11584773
+ttbar		mc11_7TeV.105200.T1_McAtNlo_Jimmy.merge.NTUP_SUSY.e835_s1272_s1274_r3043_r2993_p832/		11584773.0
 ttbarW		mc11_7TeV.119353.PythiaMadgraph_ttbarW.merge.NTUP_SUSY.e887_s1372_s1370_r3043_r2993_p832/	100000
 ttbarWj		mc11_7TeV.119354.PythiaMadgraph_ttbarWj.merge.NTUP_SUSY.e887_s1372_s1370_r3043_r2993_p832/	100000
 ttbarZ		mc11_7TeV.119355.PythiaMadgraph_ttbarZ.merge.NTUP_SUSY.e887_s1372_s1370_r3043_r2993_p832/	99997
@@ -93,3 +93,23 @@ st_s_enu	mc11_7TeV.108343.st_schan_enu_McAtNlo_Jimmy.merge.NTUP_SUSY.e825_s1310_
 st_s_munu	mc11_7TeV.108344.st_schan_munu_McAtNlo_Jimmy.merge.NTUP_SUSY.e825_s1310_s1300_r3043_r2993_p832/		253594.0
 st_s_taunu	mc11_7TeV.108345.st_schan_taunu_McAtNlo_Jimmy.merge.NTUP_SUSY.e835_s1310_s1300_r3043_r2993_p832/	253511.0
 st_Wt		mc11_7TeV.108346.st_Wt_McAtNlo_Jimmy.merge.NTUP_SUSY.e835_s1310_s1300_r3043_r2993_p832/			797024.0
+
+PythiaB_mm	mc11_7TeV.105757.PythiaB_mu10mu10X.merge.NTUP_SUSY.e825_s1310_s1300_r3043_r2993_p832/			2972438
+PythiaB_me	mc11_7TeV.105758.PythiaB_mu10e10X.merge.NTUP_SUSY.e825_s1310_s1300_r3043_r2993_p832/			2980692
+PythiaB_ee	mc11_7TeV.105759.PythiaB_e10e10X.merge.NTUP_SUSY.e825_s1310_s1300_r3043_r2993_p832/			2920985
+PythiaB_ccm	mc11_7TeV.106059.PythiaB_ccmu15X.merge.NTUP_SUSY.e825_s1310_s1300_r3043_r2993_p832/			1499697
+PythiaB_bbm	mc11_7TeV.108405.PythiaB_bbmu15X.merge.NTUP_SUSY.e825_s1310_s1300_r3043_r2993_p832/			4494082
+
+Wplusengamma	mc11_7TeV.106001.Pythia_MadGraph_Wplusenugamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/	50000
+Wplusmngamma	mc11_7TeV.106002.Pythia_MadGraph_Wplusmunugamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/	50000
+Wplustngamma	mc11_7TeV.106003.Pythia_MadGraph_Wplustaunugamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/	49999
+Wminusengamma	mc11_7TeV.108288.Pythia_MadGraph_Wminusenugamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/	50000
+Wminusmngamma	mc11_7TeV.108289.Pythia_MadGraph_Wminusmunugamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/	50000
+Wminustngamma	mc11_7TeV.108290.Pythia_MadGraph_Wminustaunugamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/	50000
+Zeegamma	mc11_7TeV.108323.Pythia_MadGraph_Zeegamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/		50000
+Zmmgamma	mc11_7TeV.108324.Pythia_MadGraph_Zmumugamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/		49950
+Zttgamma	mc11_7TeV.108325.Pythia_MadGraph_Ztautaugamma.merge.NTUP_SUSY.e887_s1310_s1300_r3043_r2993_p832/	49949
+
+WZ_Sherpa_3L	mc11_7TeV.126893.Sherpa_CT10_lllnu_WZ.merge.NTUP_SUSY.e1228_s1372_s1370_r3108_r3109_p832/	999699
+ZZ_Sherpa_4L	mc11_7TeV.126894.Sherpa_CT10_llll_ZZ.merge.NTUP_SUSY.e1228_s1372_s1370_r3108_r3109_p832/	1999597
+ZZ_Sherpa_2L	mc11_7TeV.126895.Sherpa_CT10_llnunu_ZZ.merge.NTUP_SUSY.e1228_s1372_s1370_r3108_r3109_p832/	498995
