@@ -327,7 +327,6 @@ void SusyD3PDAna::matchMuonTriggers(bool disregardPt)
 
   // New prescription!
   int run = d3pd.evt.RunNumber();
-  int evt = d3pd.evt.EventNumber();
   // loop over all pre muons
   for(uint i=0; i<m_preMuons.size(); i++){
 
