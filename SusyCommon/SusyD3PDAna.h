@@ -25,10 +25,11 @@ class SusyD3PDAna : public SusyD3PDInterface
 
   public:
 
+
     // Constructor and destructor
     SusyD3PDAna();
     virtual ~SusyD3PDAna();
-
+    
     // Begin is called before looping on entries
     virtual void    Begin(TTree *tree);
     // Main event loop function
@@ -47,15 +48,17 @@ class SusyD3PDAna : public SusyD3PDInterface
     // 
 
     // Full object selection
-    void selectObjects(){
-      selectBaselineObjects();
+    void selectObjects(SYSTEMATIC sys = NOM){
+      selectBaselineObjects(sys);
       selectSignalObjects();
     }
-    void selectBaselineObjects();
+    void selectBaselineObjects(SYSTEMATIC sys = NOM);
     void selectSignalObjects();
+    void performOverlapRemoval();
+    void evtCheck();
 
     // MissingEt
-    void buildMet();
+    void buildMet(SYSTEMATIC sys = NOM);
 
     void clearObjects();
 
@@ -91,12 +94,17 @@ class SusyD3PDAna : public SusyD3PDInterface
     void setLumi(float lumi) { m_lumi = lumi; }
     // sum of mc weights for sample
     void setSumw(float sumw) { m_sumw = sumw; }
-    // user cross section, overrides susy cross section
-    void setXsec(float xsec) { m_xsec = xsec; }
     // pileup weight, not included in event weight above
     float getPileupWeight();
 
 
+    //
+    // Running conditions
+    //
+
+    // Set sys run
+    void setSys(bool sysOn){ m_sys = sysOn; };
+    
     //
     // Trigger - check matching for all baseline leptons
     //
@@ -104,15 +112,21 @@ class SusyD3PDAna : public SusyD3PDInterface
       m_eleTrigFlags.clear();
       m_muoTrigFlags.clear();
     }
-    void matchTriggers(){
-      matchElectronTriggers();
-      matchMuonTriggers();
+    void matchTriggers(bool disregardPt){
+      matchElectronTriggers(disregardPt);
+      matchMuonTriggers(disregardPt);
     }
-    void matchElectronTriggers();
+    void matchElectronTriggers(bool disregardPt);
     //bool matchElectronTrigger(float eta, float phi, std::vector<int>* roi);
     bool matchElectronTrigger(const TLorentzVector* lv, std::vector<int>* trigBools);
-    void matchMuonTriggers();
+    void matchMuonTriggers(bool disregardPt);
     bool matchMuonTrigger(const TLorentzVector* lv, std::vector<int>* trigBools);
+
+
+    // 
+    // Debugging method
+    //
+    void dump();
 
   protected:
 
@@ -127,7 +141,8 @@ class SusyD3PDAna : public SusyD3PDInterface
     std::vector<int>            m_preElectrons; // selected electrons
     std::vector<int>            m_preMuons;     // selected muons
     std::vector<int>            m_preJets;      // selected jets
-
+    std::vector<LeptonInfo>     m_preLeptons;   // selected leptons
+    
     // "baseline" objects pass selection + overlap removal
     std::vector<int>            m_baseElectrons;// baseline electrons
     std::vector<int>            m_baseMuons;    // baseline muons
@@ -150,7 +165,8 @@ class SusyD3PDAna : public SusyD3PDInterface
 
     float                       m_lumi;         // normalized luminosity (defaults to 4.7/fb)
     float                       m_sumw;         // sum of mc weights for normalization, must be set by user
-    float                       m_xsec;         // optional user cross section, to override susy xsec usage
+    bool                        m_sys;          // True if you want sys for MC, must be set by user. 
+    int                         m_evtFlag;      // Reset after each evt
 
     //
     // Tools

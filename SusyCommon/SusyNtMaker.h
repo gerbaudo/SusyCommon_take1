@@ -5,7 +5,8 @@
 #include <iostream>
 
 #include "SusyCommon/SusyD3PDAna.h"
-#include "SusyCommon/SusyNtObject.h"
+
+#include "SusyNtuple/SusyNtObject.h"
 
 
 /*
@@ -43,10 +44,30 @@ class SusyNtMaker : public SusyD3PDAna
     void fillElectronVars(const LeptonInfo* lepIn);
     void fillMuonVars(const LeptonInfo* lepIn);
     void fillJetVars();
-    void fillMetVars();
+    void fillJetVar(int jetIdx);
+    void fillMetVars(SYSTEMATIC sys = NOM);
 
-  protected:
+    // Systematic Methods
+    void doSystematic();
 
+    void saveElectronSF(SYSTEMATIC sys);
+    void saveMuonSF(SYSTEMATIC sys);
+    void saveJetSF(SYSTEMATIC sys);
+
+    void addMissingElectron(const LeptonInfo*, SYSTEMATIC sys);
+    void addMissingMuon(const LeptonInfo*, SYSTEMATIC sys);
+    void addMissingJet(int index, SYSTEMATIC sys);
+
+    bool isElecSys(SYSTEMATIC s){ return (s == EES_UP || s == EES_DN || s == EER_UP || s == EER_DN); };
+    bool isMuonSys(SYSTEMATIC s){ return (s == MS_UP || s == MS_DN || s == ID_UP || s == ID_DN); };
+    bool isJetSys(SYSTEMATIC s){ return (s == JES_UP || s == JES_DN || s == JER); };
+    
+    void addEventFlag(SYSTEMATIC s, int eventFlag){ 
+      m_susyNt.evt()->evtFlag[s] =eventFlag;
+    };
+    
+ protected:
+    
     TFile*              m_outTreeFile;  // output tree file
     TTree*              m_outTree;      // output tree
 
@@ -66,6 +87,9 @@ class SusyNtMaker : public SusyD3PDAna
     uint                n_evt_goodVtx;
     uint                n_evt_badMu;
     uint                n_evt_cosmic;
+
+    // histogram to save cutflow
+    TH1F*               cutflow;
 
 };
 

@@ -7,8 +7,8 @@
 #include "TSystem.h"
 
 #include "SusyCommon/SusyNtMaker.h"
-#include "SusyCommon/SusyDefs.h"
-#include "SusyCommon/ChainHelper.h"
+#include "SusyNtuple/SusyDefs.h"
+#include "SusyNtuple/ChainHelper.h"
 
 using namespace std;
 
@@ -40,11 +40,8 @@ void help()
   cout << "  -w set sum of mc weights for norm" << endl;
   cout << "     default: 1"                     << endl;
 
-  cout << "  -x set cross section"              << endl;
-  cout << "     default: -1 (use susy db)"      << endl;
-
-  cout << "  -l set lumi"                       << endl;
-  cout << "     default: 4700/pb"               << endl;
+  cout << "  -sys will turn on systematic run"  << endl;
+  cout << "     default: off"                   << endl;
 
   cout << "  -h print this help"                << endl;
 }
@@ -57,12 +54,11 @@ int main(int argc, char** argv)
   int nEvt = -1;
   int nSkip = 0;
   int dbg = 0;
-  float lumi = 4700;
   float sumw = 1;
-  float xsec = -1;
   string sample;
   string fileList = "fileList.txt";
-  
+  bool sysOn = false;
+
   cout << "SusyNtMaker" << endl;
   cout << endl;
 
@@ -80,10 +76,8 @@ int main(int argc, char** argv)
       sample = argv[++i];
     else if (strcmp(argv[i], "-w") == 0)
       sumw = atof(argv[++i]);
-    else if (strcmp(argv[i], "-x") == 0)
-      xsec = atof(argv[++i]);
-    else if (strcmp(argv[i], "-l") == 0)
-      lumi = atof(argv[++i]);
+    else if (strcmp(argv[i], "-sys") == 0)
+      sysOn = true;
     //if (strcmp(argv[i], "-h") == 0)
     else
     {
@@ -99,6 +93,7 @@ int main(int argc, char** argv)
   cout << "  dbg     " << dbg      << endl;
   cout << "  input   " << fileList << endl;
   cout << "  sumw    " << sumw     << endl;
+  cout << "  sys     " << sysOn    << endl;
   cout << endl;
 
   // Build the input chain
@@ -112,9 +107,8 @@ int main(int argc, char** argv)
   SusyNtMaker* susyAna = new SusyNtMaker();
   susyAna->setDebug(dbg);
   susyAna->setSample(sample);
-  susyAna->setLumi(lumi);
   susyAna->setSumw(sumw);
-  susyAna->setXsec(xsec);
+  susyAna->setSys(sysOn);
 
   // GRL
   TString grl = gSystem->ExpandPathName("$ROOTCOREDIR/data/MultiLep/data11_7TeV.periodAllYear_DetStatus-v36-pro10_CoolRunQuery-00-04-08_Susy.xml");

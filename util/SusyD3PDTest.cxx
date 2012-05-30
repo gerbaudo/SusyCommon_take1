@@ -6,8 +6,8 @@
 #include "Cintex/Cintex.h"
 
 #include "SusyCommon/SusyD3PDInterface.h"
-#include "SusyCommon/SusyDefs.h"
-#include "SusyCommon/ChainHelper.h"
+#include "SusyNtuple/SusyDefs.h"
+#include "SusyNtuple/ChainHelper.h"
 
 using namespace std;
 

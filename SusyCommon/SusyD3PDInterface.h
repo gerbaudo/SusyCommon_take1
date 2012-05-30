@@ -20,7 +20,7 @@
 #include "MultiLep/TruthParticleD3PDObject.h"
 #include "MultiLep/TruthMuonD3PDObject.h"
 
-#include "SusyCommon/SusyDefs.h"
+#include "SusyNtuple/SusyDefs.h"
 
 
 /*
@@ -28,6 +28,13 @@
     SusyD3PDContainer - A basic class for holding the D3PDObjects
 
 */
+
+
+typedef D3PDReader::ElectronD3PDObjectElement ElectronElement;
+typedef D3PDReader::MuonD3PDObjectElement MuonElement;
+typedef D3PDReader::JetD3PDObjectElement JetElement;
+typedef D3PDReader::TruthMuonD3PDObjectElement TruthMuonElement;
+
 
 class SusyD3PDContainer
 {

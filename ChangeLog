@@ -1,4 +1,37 @@
 # vim: set noexpandtab:
+2012-05-30 Matt
+	* The great restructuring has begun! Merging now.
+	* All things relevant to running over SusyNt moved to separate directory: SusyNtuple
+
+#-----------------------------------------------------------------------------------------
+# Changes made in parallel with Steve's Original version by Matt/Anyes/Serhan
+#-----------------------------------------------------------------------------------------
+
+2012-05-28 Matt
+	* Corrected trigger matching. Was called after filling. Garbage results.
+
+2012-05-23 Matt
+	* Added cutflow histogram to susynt storing info on cuts applied upstream
+
+2012-05-18 Matt
+	* Compared cutflow on su4 sample. Match up to Cosmic Veto.
+	* Added a dump method that can be filled.. Could be deleted, leave for now.
+
+2012-05-17 Matt
+	* Updated NtMaker to handle new way to save met
+	* Updated Way sys is looped over
+
+2012-05-11 Matt
+	* Updated way evtFlag saved to insure association with SYSTEMATIC enum
+
+2012-05-10 Anyes 
+	* Move SusyNtuple related classes to separate package
+	
+	
+
+#-----------------------------------------------------------------------------------------
+# Steve's Previous version before the merge:
+#-----------------------------------------------------------------------------------------
 
 2012-05-23 Steve
 	* Added pythiaB, V+gamma, and sherpa diboson samples
