@@ -94,6 +94,8 @@ class SusyD3PDAna : public SusyD3PDInterface
     void setLumi(float lumi) { m_lumi = lumi; }
     // sum of mc weights for sample
     void setSumw(float sumw) { m_sumw = sumw; }
+    // user cross section, overrides susy cross section
+    void setXsec(float xsec) { m_xsec = xsec; }
     // pileup weight, not included in event weight above
     float getPileupWeight();
 
@@ -165,6 +167,7 @@ class SusyD3PDAna : public SusyD3PDInterface
 
     float                       m_lumi;         // normalized luminosity (defaults to 4.7/fb)
     float                       m_sumw;         // sum of mc weights for normalization, must be set by user
+    float                       m_xsec;         // optional user cross section, to override susy xsec usage
     bool                        m_sys;          // True if you want sys for MC, must be set by user. 
     int                         m_evtFlag;      // Reset after each evt
 

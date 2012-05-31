@@ -14,6 +14,8 @@ SusyD3PDAna::SusyD3PDAna() :
         m_sample(""),
         m_lumi(4700),
         m_sumw(1),
+	m_xsec(-1),
+	m_sys(false),
         m_pileup(0),
         m_susyXsec(0)
 {
@@ -325,7 +327,6 @@ void SusyD3PDAna::matchMuonTriggers(bool disregardPt)
 
   // New prescription!
   int run = d3pd.evt.RunNumber();
-  int evt = d3pd.evt.EventNumber();
   // loop over all pre muons
   for(uint i=0; i<m_preMuons.size(); i++){
 
@@ -471,6 +472,10 @@ bool SusyD3PDAna::passCosmic()
 /*--------------------------------------------------------------------------------*/
 float SusyD3PDAna::getXsecWeight()
 {
+  // Use user cross section if it has been set
+  if(m_xsec > 0) return m_xsec;
+
+  // Use SUSY cross section file
   int id = d3pd.truth.channel_number();
   if(m_xsecMap.find(id) == m_xsecMap.end()) {
     m_xsecMap[id] = m_susyXsec->process(id);

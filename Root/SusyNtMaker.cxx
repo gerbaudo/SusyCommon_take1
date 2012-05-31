@@ -206,6 +206,8 @@ void SusyNtMaker::fillEventVars()
   evt->mcChannel        = m_isMC? d3pd.truth.channel_number() : 0;
   evt->w                = m_isMC? d3pd.truth.event_weight()   : 1;
 
+  evt->avgMu            = d3pd.evt.averageIntPerXing();
+
   evt->wPileup          = m_isMC? getPileupWeight() : 1;
   evt->xsec             = m_isMC? getXsecWeight() : 1;
   evt->lumiSF           = m_isMC? getLumiWeight() : 1;             
@@ -251,6 +253,7 @@ void SusyNtMaker::fillElectronVars(const LeptonInfo* lepIn)
   eleOut->mcType        = m_isMC? element->type() : 0;
   eleOut->mcOrigin      = m_isMC? element->origin() : 0;
   eleOut->clusEta       = element->cl_eta();
+  eleOut->clusE         = element->cl_E();
   eleOut->mediumPP      = element->mediumPP();
   eleOut->tightPP       = element->tightPP();
 
@@ -347,6 +350,7 @@ void SusyNtMaker::fillJetVar(int jetIdx)
   jetOut->jvf         = element->jvtxf();
   jetOut->combNN      = element->flavor_weight_JetFitterCOMBNN();
   jetOut->idx         = jetIdx;
+  jetOut->truthLabel  = m_isMC? element->flavor_truth_label() : 0;
 
 }
 /*--------------------------------------------------------------------------------*/
